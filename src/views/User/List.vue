@@ -27,7 +27,6 @@
 </template>
 
 <script>
-	import { User } from '@/api/index';
 
 	export default {
 		data() {
@@ -41,12 +40,6 @@
 				}],
 			}
 		},
-		created() {
-
-		},
-		methods: {
-
-		}
 	}
 </script>
 

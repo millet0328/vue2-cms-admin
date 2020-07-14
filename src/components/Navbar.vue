@@ -1,27 +1,32 @@
 <template>
 	<div class="nav-bar">
 		<div class="left">
-			<div class="name">CMS管理系统</div>
-			<el-button class="icon-toggle" type="text" icon="el-icon-s-fold"></el-button>
+			<img class="logo am-margin-right-sm" src="../assets/img/common/logo.png">
+			<i class="el-icon-s-fold"></i>
 		</div>
-		<div class="right">
-			<el-dropdown>
-				<span class="el-dropdown-link">
-					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-					<span class="nickname">黄小米</span>
-					<i class="el-icon-arrow-down el-icon--right"></i>
-				</span>
-				<el-dropdown-menu size="medium" slot="dropdown">
-					<el-dropdown-item>账户信息</el-dropdown-item>
-					<el-dropdown-item>当前任务</el-dropdown-item>
-					<el-dropdown-item divided>退出登录</el-dropdown-item>
-				</el-dropdown-menu>
-			</el-dropdown>
-		</div>
+		<el-menu mode="horizontal" router :default-active="activeIndex" background-color="#31404e" text-color="#fff" active-text-color="#ffd04b">
+			<el-submenu index="1">
+				<template slot="title">
+					<el-avatar size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+					<span class="username am-margin-left-sm">赵薇</span>
+				</template>
+
+				<el-menu-item index="/admin/info">账户设置</el-menu-item>
+				<el-menu-item>收到的评论</el-menu-item>
+				<el-menu-item>退出登录</el-menu-item>
+			</el-submenu>
+		</el-menu>
 	</div>
 </template>
 
 <script>
+	export default {
+		data() {
+			return {
+				activeIndex: '1',
+			}
+		},
+	}
 </script>
 
 <style lang="less">
@@ -29,27 +34,15 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 8px 0;
-		
+
 		.left {
 			display: flex;
 			align-items: center;
 
-			.icon-toggle {
-				font-size: 18px;
-				margin-left: 20px;
-				color: white;
+			.logo {
+				height: 50px;
 			}
 		}
 
-		.right .el-dropdown-link {
-			display: flex;
-			align-items: center;
-
-			.nickname {
-				color: white;
-				margin: 0 8px;
-			}
-		}
 	}
 </style>

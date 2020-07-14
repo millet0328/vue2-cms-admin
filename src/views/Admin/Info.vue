@@ -43,9 +43,6 @@
 </template>
 
 <script>
-	import { Role } from '@/api/index';
-	import { createNamespacedHelpers } from 'vuex';
-	let { mapState, mapActions } = createNamespacedHelpers('Admin');
 
 	export default {
 		data() {
@@ -59,37 +56,12 @@
 					email: '',
 					avatar: '',
 				},
-				headers: {
-					Authorization: `Bearer ${sessionStorage.token}`
-				},
 				roleOptions: [],
 				dialogImageUrl: '',
 				dialogVisible: false
 			}
 		},
-		computed: {
-			...mapState(['userInfo'])
-		},
-		created() {
-			this.loadRoleList();
-			// 去除userInfo对象的响应式
-			this.form = { ...this.userInfo };
-		},
 		methods: {
-			// 修改资料
-			async updateInfo() {
-				let { status, msg } = await this.$store.dispatch('Admin/updateInfo', { ...this.form });
-				if (status) {
-					this.$message.success(msg);
-				} else {
-					this.$message.error(msg);
-				}
-			},
-			// 加载角色列表
-			async loadRoleList() {
-				let { status, data } = await Role.list();
-				this.roleOptions = data;
-			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === 'image/jpeg';
 				const isLt2M = file.size / 1024 / 1024 < 2;

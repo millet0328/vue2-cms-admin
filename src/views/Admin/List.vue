@@ -18,7 +18,7 @@
 			</el-table-column>
 			<el-table-column label="头像" width="180">
 				<template slot-scope="scope">
-					<img style="width: 50px;" :src="scope.row.avatar">
+					<el-avatar :size="50" :src="scope.row.avatar"></el-avatar>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="180">
@@ -34,25 +34,20 @@
 </template>
 
 <script>
-	import { Admin } from '@/api/index';
-
 	export default {
 		data() {
 			return {
-				tableData: [],
+				tableData: [{
+					"id": 1,
+					"username": "admin",
+					"fullname": "papi酱",
+					"sex": "女",
+					"tel": '15863008280',
+					"email":"nn880328@126.com",
+					"avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+				}],
 			}
 		},
-		created() {
-			this.loadList();
-		},
-		methods: {
-			async loadList() {
-				let { status, data } = await Admin.list();
-				if (status) {
-					this.tableData = data;
-				}
-			}
-		}
 	}
 </script>
 

@@ -1,10 +1,10 @@
 <template>
 	<div class="bg">
-		<el-card shadow="always" class="form-box">
+		<el-card shadow="always" class="box-card form-box">
 			<div slot="header">
 				<span>注册</span>
 			</div>
-			<el-form ref="form" :model="form" label-width="60px">
+			<el-form ref="form" :rules="rules" :model="form" label-width="60px">
 				<el-form-item label="账户">
 					<el-input v-model="form.username"></el-input>
 				</el-form-item>
@@ -27,7 +27,7 @@
 					<el-checkbox v-model="form.isAgree" label="同意本站用户协议"></el-checkbox>
 				</el-form-item>
 				<el-form-item>
-					<el-button size="medium" @click="submitForm" type="primary">注 册</el-button>
+					<el-button size="medium" @click="registerHandle" type="primary">注 册</el-button>
 				</el-form-item>
 			</el-form>
 			<div class="link-box">
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-	import { Admin } from '@/api/index';
 
 	export default {
 		data() {
@@ -52,25 +51,13 @@
 					email: '',
 					isAgree: [],
 				},
+				rules: {
+					isAgree: [
+						{ type: 'array', required: true, message: '请同意用户协议', trigger: 'change' },
+					]
+				}
 			}
 		},
-		methods: {
-			submitForm() {
-				this.$refs.form.validate(async (valid) => {
-					if (valid) {
-						// 校验通过，发送ajax
-						let { status, msg } = await Admin.register({ ...this.form });
-						if (status) {
-							// 注册成功
-							this.$message.success(msg);
-						} else {
-							// 注册失败
-							this.$message.error(msg);
-						}
-					}
-				})
-			}
-		}
 	}
 </script>
 
@@ -78,7 +65,7 @@
 	.bg {
 		width: 100vw;
 		height: 100vh;
-		background: url(../assets/img/login/login-bg.jpg);
+		background: url(../../assets/img/register/bg.jpg);
 		background-size: cover;
 		position: relative;
 

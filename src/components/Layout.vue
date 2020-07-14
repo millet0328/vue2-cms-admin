@@ -1,11 +1,11 @@
 <template>
 	<el-container>
 		<el-header>
-			<Navbar></Navbar>
+			<NavBar></NavBar>
 		</el-header>
 		<el-container>
 			<el-aside width="200px">
-				<LeftMenu></LeftMenu>
+				<SideBar></SideBar>
 			</el-aside>
 			<el-main>
 				<router-view></router-view>
@@ -15,28 +15,25 @@
 </template>
 
 <script>
-	import LeftMenu from '@/components/LeftMenu.vue';
-	import Navbar from '@/components/Navbar.vue';
+	import NavBar from '@/components/NavBar.vue';
+	import SideBar from '@/components/SideBar.vue';
 	export default {
 		components: {
-			LeftMenu,
-			Navbar
+			NavBar,
+			SideBar,
 		}
 	}
 </script>
 
-<style lang="less">
+<style scoped>
 	.el-header {
-		background-color: black;
+		background-color: #31404e;
 		color: white;
 	}
 
 	.el-aside {
+		overflow: hidden;
+		background-color: #545c64;
 		min-height: calc(100vh - 60px);
-	}
-
-	.el-main {
-		background-color: white;
-		color: #333;
 	}
 </style>

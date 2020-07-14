@@ -10,16 +10,16 @@
 			</el-table-column>
 			<el-table-column prop="cate_2nd_name" label="二级分类">
 			</el-table-column>
-			<el-table-column prop="fullname" label="主图" width="100">
+			<el-table-column prop="fullname" label="主图" width="120">
 				<template slot-scope="scope">
-					<img style="width: 100px;" :src="scope.row.main_photo">
+					<el-image style="width: 60px;" :src="scope.row.main_photo"></el-image>
 				</template>
 			</el-table-column>
 			<el-table-column prop="title" label="标题" width="400">
 			</el-table-column>
-			<el-table-column prop="create_time" label="发布日期" width="180">
+			<el-table-column prop="create_time" label="发布日期">
 			</el-table-column>
-			<el-table-column prop="update_time" label="更新日期" width="180">
+			<el-table-column prop="update_time" label="更新日期">
 			</el-table-column>
 			<el-table-column label="操作" width="180">
 				<template slot-scope="scope">
@@ -34,25 +34,20 @@
 </template>
 
 <script>
-	import { Article } from '@/api/index';
-
 	export default {
 		data() {
 			return {
-				tableData: [],
+				tableData: [{
+					"id": 1,
+					"cate_1st_name": "娱乐",
+					"cate_2nd_name": "IT新闻",
+					"title": "我是标题我是标题我是标题我是标题",
+					"main_photo":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png",
+					"create_time": '2020-07-01',
+					"update_time":"2020-07-01",
+				}],
 			}
 		},
-		created() {
-			this.loadList();
-		},
-		methods: {
-			async loadList() {
-				let { status, data } = await Article.list({ pagesize: 6, pageindex: 1 });
-				if (status) {
-					this.tableData = data;
-				}
-			}
-		}
 	}
 </script>
 

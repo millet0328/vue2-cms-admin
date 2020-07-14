@@ -51,8 +51,6 @@
 </template>
 
 <script>
-	import { Category } from '@/api/index';
-
 	export default {
 		data() {
 			return {
@@ -81,8 +79,6 @@
 				}
 				if (node.level > 0) {
 					let id = node.data.id;
-					let { status, data } = await Category.subCate({ id });
-					resolve(data);
 				}
 			},
 			openEditModal(node, data) {
@@ -97,28 +93,6 @@
 				this.insertForm.parent_id = data.id;
 				this.insertModalShow = true;
 			},
-			// 编辑节点
-			async edit() {
-				let { status, data } = await Category.update({ ...this.editForm });
-				if (status) {
-					this.node.data = this.editForm;
-					this.editModalShow = false;
-				}
-			},
-			// 添加子节点
-			async append() {
-				let { status, data } = await Category.insert({ ...this.insertForm });
-				if (status) {
-					// 树形结构添加子节点
-					this.$refs.tree.append({ ...this.insertForm, ...data }, this.node);
-					// 关闭模态框
-					this.insertModalShow = false;
-				}
-			},
-			remove(node, data) {
-				console.log(node)
-				console.log(data)
-			}
 		}
 	};
 </script>

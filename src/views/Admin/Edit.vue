@@ -37,8 +37,6 @@
 </template>
 
 <script>
-	import { Admin } from '@/api/index';
-
 	export default {
 		props: ['id'],
 		data() {
@@ -58,16 +56,7 @@
 				dialogVisible: false
 			}
 		},
-		created() {
-			this.loadInfo();
-		},
 		methods: {
-			async loadInfo() {
-				let { status, data } = await Admin.info({ id: this.id });
-				if (status) {
-					this.form = data;
-				}
-			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === 'image/jpeg';
 				const isLt2M = file.size / 1024 / 1024 < 2;

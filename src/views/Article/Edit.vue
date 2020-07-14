@@ -42,7 +42,6 @@
 </template>
 
 <script>
-	import { Category } from '@/api/index';
 	import E from 'wangeditor';
 
 	export default {
@@ -60,9 +59,6 @@
 				options_2nd: [],
 			}
 		},
-		created() {
-			this.loadCate_1st(0);
-		},
 		mounted() {
 			var editor = new E(this.$refs.editor)
 			editor.customConfig.onchange = (html) => {
@@ -70,34 +66,7 @@
 			}
 			editor.create()
 		},
-		watch: {
-			"form.cate_1st": function(newValue, oldValue) {
-				this.loadCate_2nd(newValue);
-			}
-		},
 		methods: {
-			async loadCate_1st(id) {
-				let { status, data } = await Category.subCate({ id });
-				if (status) {
-					if (data.length > 0) {
-						this.form.cate_1st = data[0].category_id;
-					} else {
-						this.form.cate_1st = '';
-					}
-					this.options_1st = data;
-				}
-			},
-			async loadCate_2nd(id) {
-				let { status, data } = await Category.subCate({ id });
-				if (status) {
-					if (data.length > 0) {
-						this.form.cate_2nd = data[0].category_id;
-					} else {
-						this.form.cate_2nd = '';
-					}
-					this.options_2nd = data;
-				}
-			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === 'image/jpeg';
 				const isLt2M = file.size / 1024 / 1024 < 2;
