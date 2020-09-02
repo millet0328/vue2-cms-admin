@@ -5,7 +5,7 @@
 				<el-card class="box-card">
 					<div class="header" slot="header">
 						<span>管理员角色</span>
-						<el-button plain size="mini" type="primary" @click="AddModalVisible = true" icon="el-icon-circle-plus-outline">添加角色
+						<el-button plain size="mini" type="primary" @click="openInsertModal" icon="el-icon-circle-plus-outline">添加角色
 						</el-button>
 					</div>
 					<el-table :data="tableData" style="width: 100%">
@@ -20,81 +20,85 @@
 							<template slot-scope="scope">
 								<el-button size="mini" @click="openEditModal(scope.row)" :disabled="scope.row.id == 1" icon="el-icon-edit" type="primary"
 								 plain>编辑</el-button>
-								<el-button size="mini" @click="removeRole(scope.row.id)" :disabled="scope.row.id == 1" type="danger" icon="el-icon-delete"
-								 plain>删除</el-button>
+								<el-button size="mini" @click="removeRole(scope.row.id,scope.$index)" :disabled="scope.row.id == 1" type="danger"
+								 icon="el-icon-delete" plain>删除</el-button>
 							</template>
 						</el-table-column>
 					</el-table>
 				</el-card>
 			</el-col>
 		</el-row>
-		<!-- 添加Modal -->
-		<el-dialog title="添加角色" :visible.sync="AddModalVisible">
-			<el-form label-width="80px" :label-position="'left'">
-				<el-form-item label="名称">
-					<el-input v-model="addForm.name"></el-input>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="AddModalVisible = false">取 消</el-button>
-				<el-button type="primary" @click="addRoleHandle">确 定</el-button>
-			</div>
-		</el-dialog>
-		<!-- 编辑Modal -->
-		<el-dialog title="编辑角色" :visible.sync="EditModalVisible">
-			<el-form label-width="80px" :label-position="'left'">
-				<el-form-item label="名称">
-					<el-input v-model="editForm.name"></el-input>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button @click="EditModalVisible = false">取 消</el-button>
-				<el-button type="primary" @click="updateRoleHandle">确 定</el-button>
-			</div>
-		</el-dialog>
 	</div>
 </template>
 
 <script>
+	import { Role } from '@/api/index';
 	export default {
 		data() {
 			return {
-				tableData: [{
-					"id": 1,
-					"name": "超级管理员",
-				}, {
-					"id": 2,
-					"name": "管理员",
-				}, {
-					"id": 3,
-					"name": "编辑",
-				}],
-				AddModalVisible: false,
-				addForm: {
-					name: "",
-				},
-				EditModalVisible: false,
-				editForm: {
-					id: "",
-					name: "",
-				},
+				tableData: [],
 			}
 		},
+		created() {
+			this.loadList();
+		},
 		methods: {
-			openEditModal(data) {
-				this.editForm = { ...data };
-				this.EditModalVisible = true;
+			// 加载列表
+			async loadList() {
+				let { status, data } = await Role.list()
+				if (status) {
+					this.tableData = data;
+				}
 			},
-			async removeRole(id) {
+			openEditModal(data) {
+				this.$prompt('请输入角色名称', {
+						inputValue: data.name,
+						inputPattern: /\S/,
+						inputErrorMessage: '角色名称不能为空！'
+					})
+					.then(async ({ value }) => {
+						let { status } = await Role.edit(data.id, value);
+						if (status) {
+							data.name = value;
+							this.$message.success('修改成功！');
+						}
+					})
+					.catch(() => {
+						this.$message.info('取消编辑')
+					});
+			},
+			async removeRole(id, index) {
 				this.$confirm('此操作将永久删除该角色, 是否继续?', {
 						type: 'warning'
 					})
-					.then(() => {
+					.then(async () => {
 						// 删除角色
+						let { status, data } = await Role.remove(id);
+						if (status) {
+							this.tableData.splice(index, 1);
+							this.$message.success('删除成功！');
+						}
+					})
+					.catch(() => {
+						this.$message.info('取消成功')
 					});
 			},
-			updateRoleHandle() {},
-			addRoleHandle() {},
+			openInsertModal() {
+				this.$prompt('请输入角色名称', {
+						inputPattern: /\S/,
+						inputErrorMessage: '角色名称不能为空！'
+					})
+					.then(async ({ value }) => {
+						let { status, data } = await Role.insert({ name: value });
+						if (status) {
+							this.tableData.push({ name: value, ...data });
+							this.$message.success('添加成功！');
+						}
+					})
+					.catch(() => {
+						this.$message.info('取消成功')
+					});
+			},
 		}
 	}
 </script>

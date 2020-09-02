@@ -5,10 +5,10 @@
 		</div>
 		<el-form ref="form" :model="form" label-width="80px">
 			<el-form-item label="用户名">
-				<el-input v-model="form.username" disabled></el-input>
+				<el-input v-model.trim="form.username" disabled></el-input>
 			</el-form-item>
 			<el-form-item label="姓名">
-				<el-input v-model="form.fullname"></el-input>
+				<el-input v-model.trim="form.fullname"></el-input>
 			</el-form-item>
 			<el-form-item label="角色">
 				<el-select v-model="form.role" placeholder="请选择">
@@ -23,20 +23,17 @@
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item label="手机">
-				<el-input v-model="form.tel"></el-input>
+				<el-input v-model.trim="form.tel"></el-input>
 			</el-form-item>
 			<el-form-item label="邮箱">
-				<el-input v-model="form.email"></el-input>
+				<el-input v-model.trim="form.email"></el-input>
 			</el-form-item>
 			<el-form-item label="头像">
-				<el-upload class="avatar-uploader" action="http://localhost:3000/upload/common/" :headers="headers" :data="{type:'avatar'}"
-				 :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-					<img v-if="form.avatar" :src="form.avatar" class="avatar">
-					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-				</el-upload>
+				<single-upload :src.sync="form.avatar" default-avatar="../images/avatar/default.jpg" upload-action="http://localhost:3001/upload/common/"
+				 remove-action="http://localhost:3001/upload/delete" :headers="headers" :data="params"></single-upload>
 			</el-form-item>
 			<el-form-item>
-				<el-button @click="updateInfo" size="medium" type="primary">修改资料</el-button>
+				<el-button @click="handleSave" size="medium" type="primary">修改资料</el-button>
 			</el-form-item>
 		</el-form>
 	</el-card>
@@ -44,10 +41,18 @@
 
 <script>
 	import { Role } from '@/api/index';
-	import { createNamespacedHelpers } from 'vuex';
-	let { mapState, mapActions } = createNamespacedHelpers('Admin');
+	import SingleUpload from '@/components/SingleUpload.vue';
 
 	export default {
+		created() {
+			// 加载角色列表
+			this.loadRole();
+			// vuex中的state通过计算属性得到，默认getter,而双向数据绑定既有getter也有setter,两者冲突
+			this.form = { ...this.$store.state.user.profile };
+		},
+		components: {
+			SingleUpload
+		},
 		data() {
 			return {
 				form: {
@@ -59,81 +64,55 @@
 					email: '',
 					avatar: '',
 				},
+				params: {
+					type: "avatar"
+				},
 				headers: {
 					Authorization: `Bearer ${sessionStorage.token}`
 				},
 				roleOptions: [],
-				dialogImageUrl: '',
-				dialogVisible: false
+				rules: {
+					username: [
+						{ type: "string", required: true, message: '请输入账号！', trigger: 'blur' },
+						{ min: 3, max: 20, message: '账户名长度在 3 到 20 个字符', trigger: 'blur' }
+					],
+					fullname: [
+						{ type: "string", required: true, message: '请输入姓名！', trigger: 'blur' }
+					],
+					sex: [
+						{ required: true, message: '请选择性别', trigger: 'change' }
+					],
+					tel: [
+						{ type: "string", required: true, message: '请输入手机号码', trigger: 'blur' },
+						{ type: "string", pattern: /^[1][3|4|5|6|7|8|9][0-9]{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+					],
+					email: [
+						{ type: "email", required: true, message: '请输入邮箱地址', trigger: 'blur' },
+					],
+					avatar: [
+						{ type: "string", required: true, message: '请上传头像图片', trigger: 'change' },
+					]
+				}
 			}
 		},
-		computed: {
-			...mapState(['userInfo'])
-		},
-		created() {
-			this.loadRoleList();
-			// 去除userInfo对象的响应式
-			this.form = { ...this.userInfo };
-		},
 		methods: {
-			// 修改资料
-			async updateInfo() {
-				let { status, msg } = await this.$store.dispatch('Admin/updateInfo', { ...this.form });
-				if (status) {
-					this.$message.success(msg);
-				} else {
-					this.$message.error(msg);
-				}
+			// 修改账户资料,同时修改store中的state
+			async handleSave() {
+				// 分发action,处理响应之后，弹窗
+				let msg = await this.$store.dispatch("user/updateProfile", { ...this.form });
+				this.$message.success(msg);
 			},
 			// 加载角色列表
-			async loadRoleList() {
+			async loadRole() {
 				let { status, data } = await Role.list();
-				this.roleOptions = data;
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
-				if (!isJPG) {
-					this.$message.error('上传头像图片只能是 JPG 格式!');
+				if (status) {
+					this.roleOptions = data;
 				}
-				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
-				}
-				return isJPG && isLt2M;
-			},
-			handleAvatarSuccess(res, file) {
-				this.form.avatar = res.data;
-			},
-
+			}
 		}
 	}
 </script>
 
 <style>
-	.avatar-uploader .el-upload {
-		border: 1px dashed #d9d9d9;
-		border-radius: 6px;
-		cursor: pointer;
-		position: relative;
-		overflow: hidden;
-	}
 
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
-
-	.avatar-uploader-icon {
-		font-size: 28px;
-		color: #8c939d;
-		width: 178px;
-		height: 178px;
-		line-height: 178px;
-		text-align: center;
-	}
-
-	.avatar {
-		width: 178px;
-		height: 178px;
-		display: block;
-	}
 </style>

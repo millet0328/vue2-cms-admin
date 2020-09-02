@@ -4,7 +4,7 @@
 			<Navbar></Navbar>
 		</el-header>
 		<el-container>
-			<el-aside width="200px">
+			<el-aside style="min-width: 200px;width: auto;">
 				<LeftMenu></LeftMenu>
 			</el-aside>
 			<el-main>
@@ -32,6 +32,7 @@
 	}
 
 	.el-aside {
+		width: auto;
 		min-height: calc(100vh - 60px);
 	}
 

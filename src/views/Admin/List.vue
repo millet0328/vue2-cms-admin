@@ -18,7 +18,7 @@
 			</el-table-column>
 			<el-table-column label="头像" width="180">
 				<template slot-scope="scope">
-					<img style="width: 50px;" :src="scope.row.avatar">
+					<el-avatar shape="square" :src="scope.row.avatar"></el-avatar>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="180">
@@ -26,7 +26,7 @@
 					<el-link :href="`#/admin/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
 						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					</el-link>
-					<el-button size="mini" type="danger" icon="el-icon-delete" plain>删除</el-button>
+					<el-button @click="handleRemove" size="mini" type="danger" icon="el-icon-delete" plain>删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -51,6 +51,14 @@
 				if (status) {
 					this.tableData = data;
 				}
+			},
+			handleRemove() {
+				this.$confirm('此操作将永久删除该管理员, 是否继续?', {
+						type: 'warning'
+					})
+					.then(() => {
+						// 删除
+					});
 			}
 		}
 	}

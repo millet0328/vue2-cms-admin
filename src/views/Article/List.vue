@@ -10,9 +10,9 @@
 			</el-table-column>
 			<el-table-column prop="cate_2nd_name" label="二级分类">
 			</el-table-column>
-			<el-table-column prop="fullname" label="主图" width="100">
+			<el-table-column label="主图" width="100">
 				<template slot-scope="scope">
-					<img style="width: 100px;" :src="scope.row.main_photo">
+					<el-image style="width: 80px;" :src="scope.row.main_photo" fit="cover"></el-image>
 				</template>
 			</el-table-column>
 			<el-table-column prop="title" label="标题" width="400">
@@ -26,7 +26,7 @@
 					<el-link :href="`#/article/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
 						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					</el-link>
-					<el-button size="mini" icon="el-icon-delete" type="danger" plain>删除</el-button>
+					<el-button @click="handleRemove" size="mini" icon="el-icon-delete" type="danger" plain>删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -43,14 +43,23 @@
 			}
 		},
 		created() {
+			// 获取列表数据
 			this.loadList();
 		},
 		methods: {
 			async loadList() {
-				let { status, data } = await Article.list({ pagesize: 6, pageindex: 1 });
+				let { status, data, total } = await Article.list({ pageindex: 1, pagesize: 30 });
 				if (status) {
 					this.tableData = data;
 				}
+			},
+			handleRemove() {
+				this.$confirm('此操作将永久删除该文章, 是否继续?', {
+						type: 'warning'
+					})
+					.then(() => {
+						// 删除
+					});
 			}
 		}
 	}

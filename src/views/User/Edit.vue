@@ -8,7 +8,7 @@
 				<el-input v-model="form.username"></el-input>
 			</el-form-item>
 			<el-form-item label="昵称">
-				<el-input v-model="form.fullname"></el-input>
+				<el-input v-model="form.nickname"></el-input>
 			</el-form-item>
 			<el-form-item label="性别">
 				<el-radio-group v-model="form.sex">
@@ -20,7 +20,7 @@
 				<el-input v-model="form.tel"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button size="medium" type="primary">保存修改</el-button>
+				<el-button @click="handleEdit" size="medium" type="primary">保存修改</el-button>
 			</el-form-item>
 		</el-form>
 	</el-card>
@@ -30,74 +30,55 @@
 	import { User } from '@/api/index';
 
 	export default {
-		props: ['id'],
 		data() {
 			return {
+				id: '',
 				form: {
 					username: '',
-					fullname: '',
+					nickname: '',
 					sex: '男',
 					tel: '',
-					email: '',
-					avatar: '',
 				},
-				dialogImageUrl: '',
-				dialogVisible: false
 			}
 		},
+		// 监听路由地址改变
+		beforeRouteUpdate(to, from, next) {
+			let { id } = to.params;
+			this.id = id;
+			this.loadProfile(id);
+			next();
+		},
 		created() {
-			this.loadInfo();
+			// 获取参数
+			let { id } = this.$route.params;
+			// 缓存id
+			this.id = id;
+			// 获取个人资料
+			this.loadProfile(id);
 		},
 		methods: {
-			async loadInfo() {
-				let { status, data } = await User.info({ id: this.id });
+			async loadProfile(id) {
+				let { status, data } = await User.profile({ id });
 				if (status) {
 					this.form = data;
 				}
 			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
-				if (!isJPG) {
-					this.$message.error('上传头像图片只能是 JPG 格式!');
+			async handleEdit() {
+				// 表单验证
+				let { status, msg } = await User.edit(this.id, { ...this.form });
+				if (status) {
+					this.$message.success(msg);
+					setTimeout(() => {
+						this.$router.replace('/user/list');
+					}, 500);
+				} else {
+					this.$message.error(msg);
 				}
-				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
-				}
-				return isJPG && isLt2M;
-			},
-			handleAvatarSuccess(res, file) {
-				this.form.avatar = res.data;
-			},
+			}
 		}
 	}
 </script>
 
 <style>
-	.avatar-uploader .el-upload {
-		border: 1px dashed #d9d9d9;
-		border-radius: 6px;
-		cursor: pointer;
-		position: relative;
-		overflow: hidden;
-	}
 
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
-
-	.avatar-uploader-icon {
-		font-size: 28px;
-		color: #8c939d;
-		width: 178px;
-		height: 178px;
-		line-height: 178px;
-		text-align: center;
-	}
-
-	.avatar {
-		width: 178px;
-		height: 178px;
-		display: block;
-	}
 </style>

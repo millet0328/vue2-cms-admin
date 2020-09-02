@@ -1,5 +1,6 @@
 <template>
-	<el-menu router class="left-menu" background-color="#545c64" text-color="#fff" active-text-color="#ffd04b">
+	<el-menu router :collapse="isCollapse" class="left-menu" :default-openeds="['0']" background-color="#545c64"
+	 text-color="#fff" active-text-color="#ffd04b">
 		<el-submenu index="1">
 			<template slot="title">
 				<i class="el-icon-document"></i>
@@ -41,10 +42,17 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex'
+
+	export default {
+		computed: {
+			...mapState("menu", ['isCollapse'])
+		}
+	}
 </script>
 
-<style lang="less">
-	.left-menu {
+<style scoped lang="less">
+	.left-menu.el-menu {
 		border-right: 0;
 		height: 100%;
 	}

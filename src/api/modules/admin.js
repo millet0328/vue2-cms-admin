@@ -7,9 +7,18 @@ let login = (data) => axios.post('/admin/login', data);
 let register = (data) => axios.post('/admin/register', data);
 
 // 管理员列表
+let list = (data) => axios.get('/admin/list', { params: data })
 
+// 管理员资料
+let info = (data) => axios.get('/admin/info', { params: data });
+
+// 管理员编辑
+let edit = (data) => axios.post('/admin/info', data);
 
 export default {
 	login,
-	register
+	register,
+	list,
+	info,
+	edit,
 }

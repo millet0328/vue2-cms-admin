@@ -2,19 +2,19 @@
 	<div class="nav-bar">
 		<div class="left">
 			<div class="name">CMS管理系统</div>
-			<el-button class="icon-toggle" type="text" icon="el-icon-s-fold"></el-button>
+			<el-button @click="handleToggle" class="icon-toggle" type="text" icon="el-icon-s-fold"></el-button>
 		</div>
 		<div class="right">
-			<el-dropdown>
+			<el-dropdown @command="handleCommand">
 				<span class="el-dropdown-link">
-					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
-					<span class="nickname">黄小米</span>
+					<el-avatar :src="profile.avatar"></el-avatar>
+					<span class="nickname">{{profile.fullname}}</span>
 					<i class="el-icon-arrow-down el-icon--right"></i>
 				</span>
 				<el-dropdown-menu size="medium" slot="dropdown">
 					<el-dropdown-item>账户信息</el-dropdown-item>
 					<el-dropdown-item>当前任务</el-dropdown-item>
-					<el-dropdown-item divided>退出登录</el-dropdown-item>
+					<el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
 				</el-dropdown-menu>
 			</el-dropdown>
 		</div>
@@ -22,6 +22,32 @@
 </template>
 
 <script>
+	import { mapState } from 'vuex';
+
+	export default {
+		computed: {
+			...mapState("user", ['profile'])
+		},
+		created() {
+			// 分发action
+			this.$store.dispatch('user/loadProfile', sessionStorage.uid);
+		},
+		methods: {
+			handleToggle() {
+				this.$store.commit('menu/toggleMenu');
+			},
+			handleCommand(command) {
+				if (command == "logout") {
+					// 清空sessionStorage
+					sessionStorage.removeItem('token');
+					sessionStorage.removeItem('role');
+					sessionStorage.removeItem('uid');
+					// 跳转页面
+					this.$router.replace('/');
+				}
+			}
+		},
+	}
 </script>
 
 <style lang="less">
@@ -30,7 +56,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: 8px 0;
-		
+
 		.left {
 			display: flex;
 			align-items: center;
