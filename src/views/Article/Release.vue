@@ -13,13 +13,13 @@
 				</el-form-item>
 				<el-form-item label="分类">
 					<el-col :span="6">
-						<el-select v-model="form.category_id" class="" placeholder="请选择文章分类">
-							<el-option v-for="item in options_1st" :key="item.category_id" :label="item.name" :value="item.category_id"></el-option>
+						<el-select v-model="form.cate_1st" placeholder="请选择文章一级分类">
+							<el-option v-for="item in options_1st" :key="item.id" :label="item.name" :value="item.id"></el-option>
 						</el-select>
 					</el-col>
 					<el-col :span="6">
-						<el-select v-model="form.cate_2nd" placeholder="请选择文章分类">
-							<el-option v-for="item in options_2nd" :key="item.category_id" :label="item.name" :value="item.category_id"></el-option>
+						<el-select v-model="form.cate_2nd" placeholder="请选择文章二级分类">
+							<el-option v-for="item in options_2nd" :key="item.id" :label="item.name" :value="item.id"></el-option>
 						</el-select>
 					</el-col>
 				</el-form-item>
@@ -55,8 +55,20 @@
 					content: '',
 					main_photo: '',
 				},
-				options_1st: [],
-				options_2nd: [],
+				options_1st: [{
+					id:1,
+					name:'科技'
+				},{
+					id:2,
+					name:'娱乐'
+				}],
+				options_2nd: [{
+					id:1,
+					name:'科技'
+				},{
+					id:2,
+					name:'娱乐'
+				}],
 			}
 		},
 		mounted() {
