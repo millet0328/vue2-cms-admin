@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<el-menu class="side-bar" :default-openeds="['0']" background-color="#545c64" router
-		 text-color="#fff" active-text-color="#ffd04b">
+		<el-menu class="side-bar" :default-openeds="['0']" router background-color="#545c64" text-color="#fff"
+		 active-text-color="#ffd04b">
 			<el-submenu index="1">
 				<template slot="title">
 					<i class="el-icon-document"></i>
@@ -47,11 +47,10 @@
 	export default {
 		data() {
 			return {
-				
+
 			}
 		},
 	}
-
 </script>
 
 <style lang="less">

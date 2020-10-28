@@ -19,7 +19,7 @@
 					<el-link :href="`#/user/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
 						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					</el-link>
-					<el-button size="mini" icon="el-icon-delete" type="danger">删除</el-button>
+					<el-button size="mini" icon="el-icon-delete" type="danger" plain>删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>

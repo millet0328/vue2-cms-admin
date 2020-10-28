@@ -6,13 +6,13 @@
 			</div>
 			<el-form ref="form" :rules="rules" :model="form" label-width="60px">
 				<el-form-item label="账户">
-					<el-input v-model="form.username"></el-input>
+					<el-input v-model="form.username" prefix-icon="el-icon-user"></el-input>
 				</el-form-item>
 				<el-form-item label="密码">
-					<el-input type="password" v-model="form.password"></el-input>
+					<el-input v-model="form.password" prefix-icon="el-icon-key" type="password"></el-input>
 				</el-form-item>
 				<el-form-item label="姓名">
-					<el-input v-model="form.fullname"></el-input>
+					<el-input v-model="form.fullname" prefix-icon="el-icon-aim"></el-input>
 				</el-form-item>
 				<el-form-item label="性别">
 					<el-radio-group v-model="form.sex">
@@ -21,7 +21,7 @@
 					</el-radio-group>
 				</el-form-item>
 				<el-form-item label="手机">
-					<el-input v-model="form.tel"></el-input>
+					<el-input v-model="form.tel" prefix-icon="el-icon-mobile-phone"></el-input>
 				</el-form-item>
 				<el-form-item prop="isAgree">
 					<el-checkbox v-model="form.isAgree" label="同意本站用户协议"></el-checkbox>
@@ -39,7 +39,6 @@
 </template>
 
 <script>
-
 	export default {
 		data() {
 			return {

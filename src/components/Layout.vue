@@ -1,11 +1,11 @@
 <template>
 	<el-container>
 		<el-header>
-			<NavBar></NavBar>
+			<nav-bar></nav-bar>
 		</el-header>
 		<el-container>
 			<el-aside width="200px">
-				<SideBar></SideBar>
+				<side-bar></side-bar>
 			</el-aside>
 			<el-main>
 				<router-view></router-view>

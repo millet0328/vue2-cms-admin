@@ -15,7 +15,7 @@
 					<el-image style="width: 60px;" :src="scope.row.main_photo"></el-image>
 				</template>
 			</el-table-column>
-			<el-table-column prop="title" label="标题" width="400">
+			<el-table-column prop="title" label="标题" width="360">
 			</el-table-column>
 			<el-table-column prop="create_time" label="发布日期">
 			</el-table-column>
