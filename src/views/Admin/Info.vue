@@ -10,12 +10,6 @@
 			<el-form-item label="姓名">
 				<el-input v-model="form.fullname"></el-input>
 			</el-form-item>
-			<el-form-item label="角色">
-				<el-select v-model="form.role" placeholder="请选择">
-					<el-option v-for="item in roleOptions" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="性别">
 				<el-radio-group v-model="form.sex">
 					<el-radio label="男"></el-radio>

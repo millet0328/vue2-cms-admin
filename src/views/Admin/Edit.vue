@@ -10,6 +10,12 @@
 			<el-form-item label="姓名">
 				<el-input v-model="form.fullname"></el-input>
 			</el-form-item>
+			<el-form-item label="角色">
+				<el-select v-model="form.role" placeholder="请选择">
+					<el-option v-for="item in roleOptions" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="性别">
 				<el-radio-group v-model="form.sex">
 					<el-radio label="男"></el-radio>
@@ -23,8 +29,8 @@
 				<el-input v-model="form.email"></el-input>
 			</el-form-item>
 			<el-form-item label="头像">
-				<el-upload class="avatar-uploader" :headers="header" action="/upload/common/" :data="{type:'avatar'}" :show-file-list="false"
-				 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+				<el-upload class="avatar-uploader" :headers="header" action="/upload/common/" :data="{type:'avatar'}"
+				 :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
 					<img v-if="form.avatar" :src="form.avatar" class="avatar">
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 				</el-upload>
@@ -52,6 +58,7 @@
 					email: '',
 					avatar: '',
 				},
+				roleOptions: [],
 				dialogImageUrl: '',
 				dialogVisible: false
 			}

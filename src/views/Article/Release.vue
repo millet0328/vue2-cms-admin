@@ -31,7 +31,7 @@
 					</el-upload>
 				</el-form-item>
 				<el-form-item label="内容">
-					<div ref="editor"></div>
+					<div id="editor"></div>
 				</el-form-item>
 				<el-form-item>
 					<el-button size="medium" type="primary">保存修改</el-button>
@@ -42,11 +42,12 @@
 </template>
 
 <script>
-	import E from 'wangeditor';
-	
+	import wangEditor from 'wangeditor'
+
 	export default {
 		data() {
 			return {
+				editor: null,
 				form: {
 					title: '',
 					cate_1st: '',
@@ -56,29 +57,36 @@
 					main_photo: '',
 				},
 				options_1st: [{
-					id:1,
-					name:'科技'
-				},{
-					id:2,
-					name:'娱乐'
+					id: 1,
+					name: '科技'
+				}, {
+					id: 2,
+					name: '娱乐'
 				}],
 				options_2nd: [{
-					id:1,
-					name:'科技'
-				},{
-					id:2,
-					name:'娱乐'
+					id: 1,
+					name: '科技'
+				}, {
+					id: 2,
+					name: '娱乐'
 				}],
 			}
 		},
 		mounted() {
-			var editor = new E(this.$refs.editor)
-			editor.customConfig.onchange = (html) => {
-				this.form.content = html
+			const editor = new wangEditor(`#editor`)
+			// 配置 onchange 回调函数，将数据同步到 vue 中
+			editor.config.onchange = (newHtml) => {
+				
 			}
+			// 创建编辑器
 			editor.create()
+			this.editor = editor
 		},
-	
+		beforeDestroy() {
+			// 调用销毁 API 对当前编辑器实例进行销毁
+			this.editor.destroy()
+			this.editor = null
+		},
 		methods: {
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === 'image/jpeg';
