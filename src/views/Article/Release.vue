@@ -9,7 +9,7 @@
 					<el-input v-model.trim="form.title"></el-input>
 				</el-form-item>
 				<el-form-item label="描述" prop="description">
-					<el-input v-model.trim="form.description"></el-input>
+					<el-input type="textarea" v-model.trim="form.description"></el-input>
 				</el-form-item>
 				<el-row>
 					<el-col :span="6">
@@ -28,11 +28,10 @@
 					</el-col>
 				</el-row>
 				<el-form-item label="主图" prop="main_photo">
-					<single-upload :src.sync="form.main_photo" :headers="headers" :data="params" upload-action="http://localhost:3001/upload/common/"
-					 remove-action="http://localhost:3001/upload/delete"></single-upload>
+					<single-upload :url.sync="form.main_photo" type="common"></single-upload>
 				</el-form-item>
 				<el-form-item label="内容" prop="content">
-					<div ref="editor"></div>
+					<div id="editor"></div>
 				</el-form-item>
 				<el-form-item>
 					<el-button @click="submitForm('form')" size="medium" type="primary">保存修改</el-button>
@@ -44,7 +43,7 @@
 
 <script>
 	import { Category, Article } from '@/api/index';
-	import E from 'wangeditor';
+	import wangEditor from 'wangeditor'
 	import SingleUpload from '@/components/SingleUpload.vue';
 
 	export default {
@@ -65,12 +64,7 @@
 				options_1st: [],
 				// 二级分类选项
 				options_2nd: [],
-				headers: {
-					Authorization: `Bearer ${sessionStorage.token}`
-				},
-				params: {
-					type: 'common',
-				},
+				editor: null,
 				rules: {
 					title: [
 						{ type: "string", required: true, message: '请输入文章标题', trigger: 'blur' },
@@ -96,16 +90,16 @@
 		},
 		// 侦听器，AJAX，异步操作
 		watch: {
-			"form.cate_1st": async function(newValue, oldValue) {
-				let options = await this.loadOptions(newValue);
-				this.options_2nd = options;
-				this.form.cate_2nd = options[0].id;
+			"form.cate_1st": function(newVal, oldVal) {
+				// 请求二级分类
+				this.handleLoadSubcate(newVal);
 			}
 		},
 		async created() {
 			// 请求一级分类
 			let options = await this.loadOptions(0);
 			this.options_1st = options;
+			// 默认选中第一项
 			this.form.cate_1st = options[0].id;
 		},
 		methods: {
@@ -115,6 +109,13 @@
 				if (status) {
 					return data;
 				}
+			},
+			async handleLoadSubcate(val) {
+				// 请求二级分类
+				let options = await this.loadOptions(val);
+				this.options_2nd = options;
+				// 默认选中第一项
+				this.form.cate_2nd = options[0].id;
 			},
 			// 发布文章
 			submitForm(formName) {
@@ -129,11 +130,17 @@
 			}
 		},
 		mounted() {
-			var editor = new E(this.$refs.editor)
-			editor.customConfig.onchange = (html) => {
-				this.form.content = html
+			const editor = new wangEditor(`#editor`)
+			// 图片上传api
+			editor.config.uploadImgServer = '/upload/editor/';
+			editor.config.uploadFileName = 'file';
+			// 配置 onchange 回调函数，将数据同步到 vue 中
+			editor.config.onchange = (newHtml) => {
+				this.form.content = newHtml
 			}
+			// 创建编辑器
 			editor.create()
+			this.editor = editor
 		},
 	}
 </script>

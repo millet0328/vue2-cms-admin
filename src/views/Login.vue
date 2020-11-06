@@ -84,7 +84,7 @@
 	.bg {
 		width: 100vw;
 		height: 100vh;
-		background: url(../assets/img/login/login-bg.jpg);
+		background: url(../assets/img/login/bg.jpg);
 		background-size: cover;
 		position: relative;
 

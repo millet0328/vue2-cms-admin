@@ -4,20 +4,20 @@
 			<div class="name">CMS管理系统</div>
 			<el-button @click="handleToggle" class="icon-toggle" type="text" icon="el-icon-s-fold"></el-button>
 		</div>
-		<div class="right">
-			<el-dropdown @command="handleCommand">
-				<span class="el-dropdown-link">
-					<el-avatar :src="profile.avatar"></el-avatar>
-					<span class="nickname">{{profile.fullname}}</span>
-					<i class="el-icon-arrow-down el-icon--right"></i>
-				</span>
-				<el-dropdown-menu size="medium" slot="dropdown">
-					<el-dropdown-item>账户信息</el-dropdown-item>
-					<el-dropdown-item>当前任务</el-dropdown-item>
-					<el-dropdown-item command="logout" divided>退出登录</el-dropdown-item>
-				</el-dropdown-menu>
-			</el-dropdown>
-		</div>
+		<el-menu mode="horizontal" :default-active="activeIndex" background-color="#31404e" text-color="#fff"
+		 active-text-color="#ffd04b">
+			<el-menu-item index="1">站点设置</el-menu-item>
+			<el-menu-item index="2">预览网站</el-menu-item>
+			<el-submenu index="3">
+				<template slot="title">
+					<el-avatar size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+					<span class="username am-margin-left-sm">赵薇</span>
+				</template>
+				<el-menu-item index="/admin/info">账户设置</el-menu-item>
+				<el-menu-item>消息通知</el-menu-item>
+				<el-menu-item>退出登录</el-menu-item>
+			</el-submenu>
+		</el-menu>
 	</div>
 </template>
 
@@ -55,7 +55,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 8px 0;
 
 		.left {
 			display: flex;
@@ -65,16 +64,6 @@
 				font-size: 18px;
 				margin-left: 20px;
 				color: white;
-			}
-		}
-
-		.right .el-dropdown-link {
-			display: flex;
-			align-items: center;
-
-			.nickname {
-				color: white;
-				margin: 0 8px;
 			}
 		}
 	}

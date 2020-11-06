@@ -4,37 +4,37 @@
 			<div slot="header">
 				<span>编辑文章</span>
 			</div>
-			<el-form ref="form" :model="form" label-width="80px">
-				<el-form-item label="标题">
-					<el-input v-model="form.title"></el-input>
+			<el-form ref="form" :model="form" :rules="rules" label-width="80px">
+				<el-form-item label="标题" prop="title">
+					<el-input v-model.trim="form.title"></el-input>
 				</el-form-item>
-				<el-form-item label="描述">
-					<el-input v-model="form.description"></el-input>
+				<el-form-item label="描述" prop="description">
+					<el-input type="textarea" v-model.trim="form.description"></el-input>
 				</el-form-item>
-				<el-form-item label="分类">
+				<el-row>
 					<el-col :span="6">
-						<el-select v-model="form.category_id" class="" placeholder="请选择文章分类">
-							<el-option v-for="item in options_1st" :key="item.category_id" :label="item.name" :value="item.category_id"></el-option>
-						</el-select>
+						<el-form-item label="分类" prop="cate_1st">
+							<el-select @change="handleLoadSubcate" v-model="form.cate_1st" placeholder="请选择一级分类">
+								<el-option v-for="item in options_1st" :key="item.id" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
 					</el-col>
 					<el-col :span="6">
-						<el-select v-model="form.cate_2nd" placeholder="请选择文章分类">
-							<el-option v-for="item in options_2nd" :key="item.category_id" :label="item.name" :value="item.category_id"></el-option>
-						</el-select>
+						<el-form-item prop="cate_2nd">
+							<el-select v-model="form.cate_2nd" placeholder="请选择二级分类">
+								<el-option v-for="item in options_2nd" :key="item.id" :label="item.name" :value="item.id"></el-option>
+							</el-select>
+						</el-form-item>
 					</el-col>
+				</el-row>
+				<el-form-item label="主图" prop="main_photo">
+					<single-upload :url.sync="form.main_photo" type="common"></single-upload>
 				</el-form-item>
-				<el-form-item label="主图">
-					<el-upload class="avatar-uploader" action="/upload/common/" :data="{type:'common'}" :show-file-list="false"
-					 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-						<img v-if="form.main_photo" :src="form.main_photo" class="avatar">
-						<i v-else class="el-icon-plus avatar-uploader-icon"></i>
-					</el-upload>
-				</el-form-item>
-				<el-form-item label="内容">
-					<div ref="editor"></div>
+				<el-form-item label="内容" prop="content">
+					<div id="editor"></div>
 				</el-form-item>
 				<el-form-item>
-					<el-button size="medium" type="primary">保存修改</el-button>
+					<el-button @click="submitForm('form')" size="medium" type="primary">保存修改</el-button>
 				</el-form-item>
 			</el-form>
 		</el-card>
@@ -42,105 +42,118 @@
 </template>
 
 <script>
-	import { Category } from '@/api/index';
-	import E from 'wangeditor';
+	import { Category, Article } from '@/api/index';
+	import wangEditor from 'wangeditor'
+	import SingleUpload from '@/components/SingleUpload.vue';
 
 	export default {
+		components: {
+			SingleUpload
+		},
+		props: ['id'],
 		data() {
 			return {
 				form: {
+					id: '',
 					title: '',
+					description: '',
 					cate_1st: '',
 					cate_2nd: '',
-					description: '',
-					content: '',
 					main_photo: '',
+					content: '',
 				},
+				// 一级分类选项
 				options_1st: [],
+				// 二级分类选项
 				options_2nd: [],
-			}
-		},
-		created() {
-			this.loadCate_1st(0);
-		},
-		mounted() {
-			var editor = new E(this.$refs.editor)
-			editor.customConfig.onchange = (html) => {
-				this.form.content = html
-			}
-			editor.create()
-		},
-		watch: {
-			"form.cate_1st": function(newValue, oldValue) {
-				this.loadCate_2nd(newValue);
+				editor: null,
+				rules: {
+					title: [
+						{ type: "string", required: true, message: '请输入文章标题', trigger: 'blur' },
+						{ min: 3, max: 40, message: '文章标题长度在 3 到 40 个字符', trigger: 'blur' }
+					],
+					description: [
+						{ type: "string", required: true, message: '请输入文章描述', trigger: 'blur' },
+					],
+					cate_1st: [
+						{ type: "number", required: true, message: '请选择一级分类', trigger: 'change' },
+					],
+					cate_2nd: [
+						{ type: "number", required: true, message: '请选择二级分类', trigger: 'change' },
+					],
+					main_photo: [
+						{ type: "string", required: true, message: '请上传文章主图', trigger: 'change' },
+					],
+					content: [
+						{ type: "string", required: true, message: '请填写文章内容', trigger: 'blur' },
+					]
+				}
 			}
 		},
 		methods: {
-			async loadCate_1st(id) {
-				let { status, data } = await Category.subCate({ id });
+			// 请求下一级分类
+			async loadOptions(id) {
+				let { status, data } = await Category.subcate({ id });
 				if (status) {
-					if (data.length > 0) {
-						this.form.cate_1st = data[0].category_id;
-					} else {
-						this.form.cate_1st = '';
+					return data;
+				}
+			},
+			async handleLoadSubcate(val, selected) {
+				// 请求二级分类
+				let options = await this.loadOptions(val);
+				this.options_2nd = options;
+				// 指定选中第几项
+				if (selected) {
+					this.form.cate_2nd = selected;
+					return;
+				}
+				// 默认选中第一项
+				this.form.cate_2nd = options[0].id;
+			},
+			// 编辑文章
+			submitForm(formName) {
+				this.$refs.form.validate(async (valid) => {
+					if (valid) {
+						let { status, msg } = await Article.edit({ ...this.form, id: this.id });
+						if (status) {
+							this.$message.success(msg);
+						}
 					}
-					this.options_1st = data;
-				}
-			},
-			async loadCate_2nd(id) {
-				let { status, data } = await Category.subCate({ id });
-				if (status) {
-					if (data.length > 0) {
-						this.form.cate_2nd = data[0].category_id;
-					} else {
-						this.form.cate_2nd = '';
-					}
-					this.options_2nd = data;
-				}
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
-				if (!isJPG) {
-					this.$message.error('上传头像图片只能是 JPG 格式!');
-				}
-				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
-				}
-				return isJPG && isLt2M;
-			},
-			handleAvatarSuccess(res, file) {
-				this.form.main_photo = res.data;
-			},
-		}
+				})
+			}
+		},
+		async mounted() {
+			// 富文本编辑器
+			const editor = new wangEditor(`#editor`)
+			// 图片上传api
+			editor.config.uploadImgServer = '/upload/editor/';
+			editor.config.uploadFileName = 'file';
+			// 配置 onchange 回调函数，将数据同步到 vue 中
+			editor.config.onchange = (newHtml) => {
+				this.form.content = newHtml
+			}
+			// 创建编辑器
+			editor.create();
+			this.editor = editor;
+
+			// 请求一级分类
+			let options = await this.loadOptions(0);
+			this.options_1st = options;
+
+			// 1.获取文章详情
+			let { status, data } = await Article.detail({ id: this.id });
+			if (status) {
+				this.form = data;
+				// 处理二级分类
+				this.handleLoadSubcate(data.cate_1st, data.cate_2nd);
+				// 重新设置编辑器内容
+				this.editor.txt.html(data.content);
+			}
+
+		},
 	}
 </script>
 
 <style>
-	.avatar-uploader .el-upload {
-		border: 1px dashed #d9d9d9;
-		border-radius: 6px;
-		cursor: pointer;
-		position: relative;
-		overflow: hidden;
-	}
 
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
-
-	.avatar-uploader-icon {
-		font-size: 28px;
-		color: #8c939d;
-		width: 178px;
-		height: 178px;
-		line-height: 178px;
-		text-align: center;
-	}
-
-	.avatar {
-		width: 178px;
-		height: 178px;
-		display: block;
-	}
 </style>

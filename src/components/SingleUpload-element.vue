@@ -1,11 +1,11 @@
 <template>
-	<el-upload class="avatar-uploader" action="/upload/common/" :data="{type:'avatar'}" :show-file-list="false"
-	 :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-		<template v-if="url">
+	<el-upload class="uploader" action="/upload/common/" :headers="header" :data="{type:type}" :show-file-list="false"
+	 :on-success="handleAvatarSuccess" :on-error="handleAvatarError" :before-upload="beforeAvatarUpload">
+		<div v-if="url" class="preview">
 			<img :src="url" class="avatar">
-			<i @click.stop="handleRemove" class="el-icon-delete avatar-uploader-remove"></i>
-		</template>
-		<i v-else class="el-icon-plus avatar-uploader-icon"></i>
+			<i @click.stop="handleRemove" class="el-icon-delete remove"></i>
+		</div>
+		<i v-else class="el-icon-plus plus"></i>
 	</el-upload>
 </template>
 
@@ -13,27 +13,33 @@
 	import { Upload } from '@/api/index';
 
 	export default {
-		props: ['url'],
+		props: ['url', 'type'],
+		data() {
+			return {
+				header: {
+					Authorization: `Bearer ${sessionStorage.token}`,
+				},
+			}
+		},
 		methods: {
 			async handleRemove() {
 				// 判断是否默认头像
 				let isDefault = this.url.indexOf('default') >= 0;
 
 				if (isDefault) {
-					this.$emit('remove');
+					this.$emit('update:url', '');
 					return false;
 				}
-				let src = this.url.replace(/.+\/images/, './images');
-				let { status } = await Upload.remove({ src });
+				let { status } = await Upload.remove({ src: this.url });
 				if (status) {
 					this.$message.success("删除成功！");
-					this.$emit('remove');
+					this.$emit('update:url', '');
 				}
 			},
-			handleAvatarSuccess(res, file, fileList) {
-				if (res.status) {
-					this.$message.success(res.msg);
-					this.$emit('success', res);
+			handleAvatarSuccess({ status, msg, src }, file, fileList) {
+				if (status) {
+					this.$message.success(msg);
+					this.$emit('update:url', src);
 				}
 			},
 			beforeAvatarUpload(file) {
@@ -47,50 +53,62 @@
 				}
 				return isJPG && isLt2M;
 			},
+			handleAvatarError(err, file, fileList) {
+				if (err) {
+					let res = JSON.parse(err.message);
+					this.$message.error(res.msg);
+				}
+			},
 		}
 	}
 </script>
 
-<style>
-	.avatar-uploader .el-upload {
+<style lang="less">
+	.uploader .el-upload {
+		width: 178px;
+		height: 178px;
 		border: 1px dashed #d9d9d9;
 		border-radius: 6px;
 		cursor: pointer;
 		position: relative;
 		overflow: hidden;
-	}
 
-	.avatar-uploader .el-upload:hover {
-		border-color: #409EFF;
-	}
+		&:hover {
+			border-color: #409EFF;
 
-	.avatar-uploader-icon,
-	.avatar-uploader-remove {
-		font-size: 28px;
-		color: #8c939d;
-		width: 178px;
-		height: 178px;
-		line-height: 178px;
-		text-align: center;
-	}
+			.remove {
+				opacity: 1;
+			}
+		}
 
-	.avatar {
-		width: 178px;
-		height: 178px;
-		display: block;
-	}
+		.remove,
+		.plus {
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			line-height: 178px;
+			text-align: center;
+			font-size: 28px;
+			color: #8c939d;
+			z-index: 10;
+			transition: all 0.5s;
+		}
 
-	.avatar-uploader:hover .avatar-uploader-remove {
-		display: block;
-	}
+		.remove {
+			color: white;
+			background-color: rgba(0, 0, 0, 0.7);
+			opacity: 0;
+		}
 
-	.avatar-uploader-remove {
-		position: absolute;
-		left: 0;
-		top: 0;
-		color: white;
-		background-color: rgba(0, 0, 0, 0.7);
-		display: none;
-		z-index: 10;
+		.preview {
+
+			.avatar {
+				width: 178px;
+				height: 178px;
+				display: block;
+			}
+		}
 	}
 </style>

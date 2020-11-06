@@ -1,11 +1,11 @@
 <template>
 	<el-container>
 		<el-header>
-			<Navbar></Navbar>
+			<nav-bar></nav-bar>
 		</el-header>
 		<el-container>
 			<el-aside style="min-width: 200px;width: auto;">
-				<LeftMenu></LeftMenu>
+				<left-menu></left-menu>
 			</el-aside>
 			<el-main>
 				<router-view></router-view>
@@ -16,11 +16,11 @@
 
 <script>
 	import LeftMenu from '@/components/LeftMenu.vue';
-	import Navbar from '@/components/Navbar.vue';
+	import NavBar from '@/components/NavBar.vue';
 	export default {
 		components: {
 			LeftMenu,
-			Navbar
+			NavBar
 		}
 	}
 </script>
