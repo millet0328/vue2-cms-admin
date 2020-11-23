@@ -1,6 +1,6 @@
 import axios from 'axios';
-import { Loading, Message } from 'element-ui';
 
+import { Loading, Notification } from 'element-ui';
 // 路由实例
 import router from '@/router/index';
 
@@ -19,16 +19,7 @@ axios.interceptors.request.use(function(config) {
 		return config;
 	}
 	// 获取token，判断是否已经登录
-	let token = sessionStorage.token;
-	// 没有token,提示用户，跳转登录页面
-	if (!token) {
-		Message.error('token令牌失效，请重新登录！');
-		// 延迟2秒，跳转页面
-		setTimeout(() => {
-			router.replace('/');
-			loading.close();
-		}, 2000);
-	}
+	let { token } = sessionStorage;
 	// 拥有token,在headers头添加token
 	config.headers.Authorization = `Bearer ${token}`;
 	return config;
@@ -51,19 +42,30 @@ axios.interceptors.response.use(function(res) {
 			Message.error(response.statusText);
 			break;
 	}
-}, function({ response: { status, data } }) {
-	// 拦截401状态码
-	if (status == 401) {
-		Message.error({
-			message: `Token已过期，请重新登录！`,
-			onClose: () => {
-				router.replace('/login');
-				loading.close();
-			}
-		});
+}, function({ response: { status, data, statusText } }) {
+	switch (status) {
+		case 401:
+			// 提示用户
+			let expiredTime = new Date(data.inner.expiredAt).toLocaleString();
+			Notification.error({
+				title: "Token失效",
+				message: `token已过期，有效期至${expiredTime}，请重新登录！`,
+			});
+			// 获取当前路由，跳转登录
+			let { fullPath } = router.history.current;
+			router.replace({ path: '/login', query: { redirect: fullPath } });
+			console.error(data.status, data.message);
+			break;
+		case 404:
+			console.error(status, statusText);
+			break;
+		case 500:
+			console.error(status, statusText);
+			break;
+		default:
+			console.error(status, statusText);
+			break;
 	}
-	// 对响应错误做点什么
-	return Promise.reject(data);
 });
 
 

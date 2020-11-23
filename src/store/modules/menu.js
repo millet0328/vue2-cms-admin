@@ -11,5 +11,9 @@ export default {
 		},
 	},
 	actions: {},
-	getters: {},
+	getters: {
+		toggleIcon({ isCollapse }) {
+			return isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold';
+		},
+	},
 }

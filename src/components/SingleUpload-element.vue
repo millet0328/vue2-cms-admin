@@ -1,114 +1,151 @@
 <template>
-	<el-upload class="uploader" action="/upload/common/" :headers="header" :data="{type:type}" :show-file-list="false"
-	 :on-success="handleAvatarSuccess" :on-error="handleAvatarError" :before-upload="beforeAvatarUpload">
-		<div v-if="url" class="preview">
-			<img :src="url" class="avatar">
-			<i @click.stop="handleRemove" class="el-icon-delete remove"></i>
-		</div>
-		<i v-else class="el-icon-plus plus"></i>
+	<el-upload
+		class="avatar-uploader"
+		:action="uploadAction"
+		:headers="headers"
+		:data="data"
+		:show-file-list="false"
+		:on-success="handleUploadSuccess"
+		:on-error="handleUploadError"
+		:before-upload="handleBeforeUpload"
+	>
+		<template v-if="src">
+			<div @click.stop="handleRemove" class="cover"><i class="el-icon-delete avatar-uploader-icon"></i></div>
+			<img :src="src" class="avatar" />
+		</template>
+		<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 	</el-upload>
 </template>
 
 <script>
-	import { Upload } from '@/api/index';
+// 支持双向数据绑定，采用:src.sync
+// 支持$emit事件success,处理复杂上传成功回调函数
+import axios from 'axios';
 
-	export default {
-		props: ['url', 'type'],
-		data() {
-			return {
-				header: {
-					Authorization: `Bearer ${sessionStorage.token}`,
-				},
+export default {
+	name: 'single-upload',
+	props: {
+		src: {
+			type: String
+		},
+		defaultImage: {
+			type: String
+		},
+		uploadAction: {
+			type: String,
+			required: true
+		},
+		removeAction: {
+			type: String,
+			required: true
+		},
+		data: {
+			type: Object
+		},
+		headers: {
+			type: Object
+		}
+	},
+	methods: {
+		// 上传图片之前的检查
+		handleBeforeUpload(file) {
+			let reg = /^image\/(jpe?g|png)$/;
+			const isImg = reg.test(file.type);
+			const isLt2M = file.size / 1024 / 1024 < 2;
+			if (!isImg) {
+				this.$message.error('上传头像图片只能是 JPG/PNG 格式!');
+			}
+			if (!isLt2M) {
+				this.$message.error('上传头像图片大小不能超过 2MB!');
+			}
+			return isImg && isLt2M;
+		},
+		// 上传图片成功
+		handleUploadSuccess(res, file) {
+			// 触发外部绑定的事件
+			this.$emit('success', res);
+			// 双向数据绑定触发
+			this.$emit('update:src', res.src);
+		},
+		// 上传图片失败
+		handleUploadError({ status, message }, file, fileList) {
+			switch (status) {
+				case 401:
+					this.$message.error(`错误:401,Token失效,请重新登录!`);
+					break;
+				case 400:
+					message = JSON.parse(message);
+					this.$message.error(`错误:400,${message}`);
+					break;
+				default:
+					this.$message.error(`错误:${status},${message}!`);
+					break;
 			}
 		},
-		methods: {
-			async handleRemove() {
-				// 判断是否默认头像
-				let isDefault = this.url.indexOf('default') >= 0;
-
-				if (isDefault) {
-					this.$emit('update:url', '');
-					return false;
-				}
-				let { status } = await Upload.remove({ src: this.url });
+		// 删除现有图片
+		async handleRemove() {
+			// 如果不是默认头像，物理删除图片
+			if (this.src != this.defaultImage) {
+				let { status } = await axios.delete(this.removeAction, { params: { src: this.src } });
 				if (status) {
-					this.$message.success("删除成功！");
-					this.$emit('update:url', '');
+					this.$message.success('删除成功!');
 				}
-			},
-			handleAvatarSuccess({ status, msg, src }, file, fileList) {
-				if (status) {
-					this.$message.success(msg);
-					this.$emit('update:url', src);
-				}
-			},
-			beforeAvatarUpload(file) {
-				const isJPG = file.type === 'image/jpeg';
-				const isLt2M = file.size / 1024 / 1024 < 2;
-				if (!isJPG) {
-					this.$message.error('上传头像图片只能是 JPG 格式!');
-				}
-				if (!isLt2M) {
-					this.$message.error('上传头像图片大小不能超过 2MB!');
-				}
-				return isJPG && isLt2M;
-			},
-			handleAvatarError(err, file, fileList) {
-				if (err) {
-					let res = JSON.parse(err.message);
-					this.$message.error(res.msg);
-				}
-			},
+			}
+			// 如果是默认头像，仅移除，不做物理删除
+			this.$emit('update:src', '');
 		}
 	}
+};
 </script>
 
 <style lang="less">
-	.uploader .el-upload {
-		width: 178px;
-		height: 178px;
-		border: 1px dashed #d9d9d9;
-		border-radius: 6px;
-		cursor: pointer;
-		position: relative;
-		overflow: hidden;
+.avatar-uploader .el-upload {
+	border: 1px dashed #d9d9d9;
+	border-radius: 6px;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
 
-		&:hover {
-			border-color: #409EFF;
+	&:hover {
+		border-color: #409eff;
+	}
 
-			.remove {
-				opacity: 1;
-			}
-		}
+	.avatar-uploader-icon {
+		font-size: 28px;
+		color: #8c939d;
+		width: 150px;
+		height: 150px;
+		line-height: 150px;
+		text-align: center;
+	}
 
-		.remove,
-		.plus {
-			position: absolute;
-			left: 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			line-height: 178px;
-			text-align: center;
-			font-size: 28px;
-			color: #8c939d;
-			z-index: 10;
-			transition: all 0.5s;
-		}
+	.cover {
+		content: '';
+		display: block;
+		font-size: 14px;
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		z-index: 2;
+		background-color: rgba(0, 0, 0, 0.7);
+		opacity: 0;
+		transition: all 0.5s;
 
-		.remove {
+		.el-icon-delete {
 			color: white;
-			background-color: rgba(0, 0, 0, 0.7);
-			opacity: 0;
-		}
-
-		.preview {
-
-			.avatar {
-				width: 178px;
-				height: 178px;
-				display: block;
-			}
 		}
 	}
+
+	&:hover .cover {
+		opacity: 1;
+	}
+
+	.avatar {
+		width: 150px;
+		height: 150px;
+		display: block;
+	}
+}
 </style>

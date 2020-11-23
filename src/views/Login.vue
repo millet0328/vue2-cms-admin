@@ -30,8 +30,8 @@
 		data() {
 			return {
 				form: {
-					username: "",
-					password: "",
+					username: "admin",
+					password: "123",
 				},
 				rules: {
 					username: [
@@ -59,7 +59,7 @@
 							this.$message.success(msg);
 							// 存取token，uid，role
 							sessionStorage.token = data.token;
-							sessionStorage.uid = data.id;
+							sessionStorage.id = data.id;
 							sessionStorage.role = data.role;
 							// 跳转页面
 							let { redirect } = this.$route.query;

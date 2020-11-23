@@ -4,7 +4,7 @@
 			<nav-bar></nav-bar>
 		</el-header>
 		<el-container>
-			<el-aside style="min-width: 200px;width: auto;">
+			<el-aside width="auto">
 				<left-menu></left-menu>
 			</el-aside>
 			<el-main>
@@ -25,14 +25,14 @@
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped="scoped">
 	.el-header {
 		background-color: black;
 		color: white;
+		padding: 0px;
 	}
 
 	.el-aside {
-		width: auto;
 		min-height: calc(100vh - 60px);
 	}
 

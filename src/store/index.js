@@ -4,7 +4,6 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 // 导入模块
-import test from './modules/test';
 import menu from './modules/menu';
 import user from './modules/user';
 
@@ -16,7 +15,6 @@ let store = new Vuex.Store({
 	actions: {},
 	getters: {},
 	modules: {
-		test,
 		menu,
 		user,
 	},

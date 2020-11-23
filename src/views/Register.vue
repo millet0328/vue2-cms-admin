@@ -107,7 +107,7 @@
 							this.$message.success(msg);
 							// 存取token，uid，role
 							sessionStorage.token = data.token;
-							sessionStorage.uid = data.id;
+							sessionStorage.id = data.id;
 							sessionStorage.role = data.role;
 							// 跳转页面
 							this.$router.replace('/article/list');

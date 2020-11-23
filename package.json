@@ -7,24 +7,24 @@
     "build": "vue-cli-service build"
   },
   "dependencies": {
-    "axios": "^0.19.2",
-    "core-js": "^3.6.5",
-    "element-ui": "^2.4.5",
-    "vue": "^2.6.11",
-    "vue-router": "^3.1.6",
-    "vuex": "^3.3.0",
-    "vuex-persistedstate": "^3.0.1",
-    "wangeditor": "^3.1.1"
+    "axios": "^0.21.0",
+    "core-js": "^3.7.0",
+    "element-ui": "^2.14.1",
+    "vue": "^2.6.12",
+    "vue-router": "^3.4.9",
+    "vuex": "^3.5.1",
+    "vuex-persistedstate": "^4.0.0-beta.1",
+    "wangeditor": "^4.3.0"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.3.0",
     "@vue/cli-plugin-router": "~4.3.0",
     "@vue/cli-plugin-vuex": "~4.3.0",
     "@vue/cli-service": "~4.3.0",
-    "less": "^3.0.4",
+    "less": "^3.12.2",
     "less-loader": "^5.0.0",
     "vue-cli-plugin-element": "^1.0.1",
-    "vue-template-compiler": "^2.6.11"
+    "vue-template-compiler": "^2.6.12"
   },
   "browserslist": [
     "> 1%",

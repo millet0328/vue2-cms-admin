@@ -1,5 +1,5 @@
 <template>
-	<el-menu router :collapse="isCollapse" class="left-menu" :default-openeds="['0']" background-color="#545c64"
+	<el-menu router :collapse="isCollapse" class="left-menu" :default-openeds="['1']" background-color="#545c64"
 	 text-color="#fff" active-text-color="#ffd04b">
 		<el-submenu index="1">
 			<template slot="title">

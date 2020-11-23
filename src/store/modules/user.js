@@ -25,6 +25,7 @@ export default {
 				context.commit('setProfile', payload);
 				return msg;
 			}
+			return { status, msg };
 		},
 	},
 	getters: {},
