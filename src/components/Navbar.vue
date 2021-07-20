@@ -4,7 +4,7 @@
 			<img class="logo am-margin-right-sm" src="../assets/img/common/logo.png">
 			<i class="el-icon-s-fold"></i>
 		</div>
-		<el-menu mode="horizontal" :default-active="activeIndex" background-color="#31404e" text-color="#fff"
+		<el-menu mode="horizontal" background-color="#31404e" text-color="#fff"
 		 active-text-color="#ffd04b">
 			<el-menu-item index="1">站点设置</el-menu-item>
 			<el-menu-item index="2">预览网站</el-menu-item>
@@ -25,7 +25,7 @@
 	export default {
 		data() {
 			return {
-				activeIndex: '1',
+				
 			}
 		},
 	}

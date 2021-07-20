@@ -43,6 +43,15 @@ const routes = [{
 			component: () => import('@/views/Category/List.vue')
 		}]
 	}, {
+		path: '/tag',
+		name: 'Tag',
+		component: Layout,
+		children: [{
+			path: 'list',
+			name: 'TagList',
+			component: () => import('@/views/Tag/List.vue')
+		}]
+	}, {
 		path: '/user',
 		name: 'User',
 		component: Layout,

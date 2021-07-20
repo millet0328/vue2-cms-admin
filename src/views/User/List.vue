@@ -16,9 +16,7 @@
 			</el-table-column>
 			<el-table-column label="操作" width="180">
 				<template slot-scope="scope">
-					<el-link :href="`#/user/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
-						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
-					</el-link>
+					<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					<el-button size="mini" icon="el-icon-delete" type="danger" plain>删除</el-button>
 				</template>
 			</el-table-column>
@@ -28,19 +26,19 @@
 
 <script>
 
-	export default {
-		data() {
-			return {
-				tableData: [{
-					"id": 1,
-					"username": "admin",
-					"nickname": "papi酱",
-					"sex": "女",
-					"tel": '15863008280',
-				}],
-			}
-		},
-	}
+export default {
+  data() {
+    return {
+      tableData: [{
+        "id": 1,
+        "username": "admin",
+        "nickname": "papi酱",
+        "sex": "女",
+        "tel": '15863008280',
+      }],
+    }
+  },
+}
 </script>
 
 <style>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-menu class="side-bar" :default-openeds="['0']" router background-color="#545c64" text-color="#fff"
-		 active-text-color="#ffd04b">
+			active-text-color="#ffd04b">
 			<el-submenu index="1">
 				<template slot="title">
 					<i class="el-icon-document"></i>
@@ -14,6 +14,13 @@
 				<i class="el-icon-data-analysis"></i>
 				<span slot="title">分类管理</span>
 			</el-menu-item>
+			<el-submenu index="2">
+				<template slot="title">
+					<i class="el-icon-collection-tag"></i>
+					<span slot="title">标签管理</span>
+				</template>
+				<el-menu-item index="/tag/list">标签列表</el-menu-item>
+			</el-submenu>
 			<el-submenu index="3">
 				<template slot="title">
 					<i class="el-icon-user"></i>
@@ -55,7 +62,6 @@
 
 <style lang="less">
 	.side-bar {
-		width: 200px;
 		color: white;
 		border-right: 0;
 	}

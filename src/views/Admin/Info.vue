@@ -23,21 +23,20 @@
 				<el-input v-model="form.email"></el-input>
 			</el-form-item>
 			<el-form-item label="头像">
-				<el-upload class="avatar-uploader" action="http://localhost:3000/upload/common/" :headers="headers" :data="{type:'avatar'}"
-				 :show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-					<img v-if="form.avatar" :src="form.avatar" class="avatar">
+				<el-upload class="avatar-uploader" action="https://jsonplaceholder.typicode.com/posts/"
+					:show-file-list="false" :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+					<img v-if="imageUrl" :src="imageUrl" class="avatar">
 					<i v-else class="el-icon-plus avatar-uploader-icon"></i>
 				</el-upload>
 			</el-form-item>
 			<el-form-item>
-				<el-button @click="updateInfo" size="medium" type="primary">修改资料</el-button>
+				<el-button size="medium" type="primary">修改资料</el-button>
 			</el-form-item>
 		</el-form>
 	</el-card>
 </template>
 
 <script>
-
 	export default {
 		data() {
 			return {
@@ -50,15 +49,17 @@
 					email: '',
 					avatar: '',
 				},
-				roleOptions: [],
-				dialogImageUrl: '',
-				dialogVisible: false
+				imageUrl: ''
 			}
 		},
 		methods: {
+			handleAvatarSuccess(res, file) {
+				this.imageUrl = URL.createObjectURL(file.raw);
+			},
 			beforeAvatarUpload(file) {
 				const isJPG = file.type === 'image/jpeg';
 				const isLt2M = file.size / 1024 / 1024 < 2;
+
 				if (!isJPG) {
 					this.$message.error('上传头像图片只能是 JPG 格式!');
 				}
@@ -66,11 +67,7 @@
 					this.$message.error('上传头像图片大小不能超过 2MB!');
 				}
 				return isJPG && isLt2M;
-			},
-			handleAvatarSuccess(res, file) {
-				this.form.avatar = res.data;
-			},
-
+			}
 		}
 	}
 </script>

@@ -12,7 +12,7 @@
 					<el-input type="password" v-model="form.password" prefix-icon="el-icon-key" placeholder="请输入密码!"></el-input>
 				</el-form-item>
 				<el-form-item>
-					<el-button size="medium" type="primary" @click="loginHandle">登录</el-button>
+					<el-button size="medium" type="primary">登录</el-button>
 				</el-form-item>
 			</el-form>
 			<div class="link-box">

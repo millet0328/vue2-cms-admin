@@ -23,9 +23,7 @@
 			</el-table-column>
 			<el-table-column label="操作" width="180">
 				<template slot-scope="scope">
-					<el-link :href="`#/admin/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
-						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
-					</el-link>
+					<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					<el-button size="mini" type="danger" icon="el-icon-delete" plain>删除</el-button>
 				</template>
 			</el-table-column>
@@ -34,21 +32,21 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				tableData: [{
-					"id": 1,
-					"username": "admin",
-					"fullname": "papi酱",
-					"sex": "女",
-					"tel": '15863008280',
-					"email":"nn880328@126.com",
-					"avatar":"https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
-				}],
-			}
-		},
-	}
+export default {
+  data() {
+    return {
+      tableData: [{
+        "id": 1,
+        "username": "admin",
+        "fullname": "papi酱",
+        "sex": "女",
+        "tel": '15863008280',
+        "email": "nn880328@126.com",
+        "avatar": "https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
+      }],
+    }
+  },
+}
 </script>
 
 <style>
