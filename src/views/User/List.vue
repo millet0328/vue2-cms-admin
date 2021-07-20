@@ -19,7 +19,8 @@
 					<el-link :href="`#/user/edit/${scope.row.id}`" class="am-margin-right-sm" type="primary">
 						<el-button size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
 					</el-link>
-					<el-button size="mini" @click="removeHandle(scope.row.id,scope.$index)" icon="el-icon-delete" type="danger">删除</el-button>
+					<el-button size="mini" @click="removeHandle(scope.row.id,scope.$index)" icon="el-icon-delete"
+						type="danger">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -27,7 +28,7 @@
 </template>
 
 <script>
-	import { User } from '@/api/index';
+	import { User } from '@/api/';
 
 	export default {
 		data() {
@@ -36,6 +37,7 @@
 			}
 		},
 		created() {
+			document.title = "用户列表";
 			this.loadList();
 		},
 		methods: {
@@ -49,7 +51,7 @@
 				this.$confirm('确定要删除此账户吗？', { type: 'warning' })
 					.then(async () => {
 						// 发送ajax
-						let { status } = await User.remove(id);
+						let { status } = await User.remove({id});
 						if (status) {
 							// 删除界面上的数据
 							this.tableData.splice(index, 1);

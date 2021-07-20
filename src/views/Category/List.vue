@@ -12,10 +12,12 @@
 						<el-button @click.stop="openEditModal(node, data)" type="text" icon="el-icon-edit" size="mini">
 							编辑
 						</el-button>
-						<el-button @click.stop="openInsertModal(node, data)" type="text" icon="el-icon-plus" size="mini">
+						<el-button @click.stop="openInsertModal(node, data)" type="text" icon="el-icon-circle-plus-outline"
+							size="mini">
 							添加
 						</el-button>
-						<el-button @click.stop="openRemoveModal(node, data)" type="text" icon="el-icon-delete" size="mini">
+						<el-button @click.stop="openRemoveModal(node, data)" type="text" icon="el-icon-delete"
+							size="mini">
 							删除
 						</el-button>
 					</span>
@@ -74,6 +76,9 @@
 				insertVisible: false,
 				editVisible: false,
 			};
+		},
+		created() {
+			document.title = "分类列表";
 		},
 		methods: {
 			async loadNode(node, resolve) {

@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 
-import { Message } from 'element-ui';
+import { Notification } from 'element-ui';
 
 import Layout from '@/components/Layout.vue';
 
@@ -46,6 +46,16 @@ const routes = [{
 			path: 'list',
 			name: 'CategoryList',
 			component: () => import('@/views/Category/List.vue')
+		}]
+	}, {
+		path: '/tag',
+		name: 'Tag',
+		component: Layout,
+		meta: { requiresAuth: true },
+		children: [{
+			path: 'list',
+			name: 'TagList',
+			component: () => import('@/views/Tag/List.vue')
 		}]
 	}, {
 		path: '/user',
@@ -113,7 +123,11 @@ router.beforeEach((to, from, next) => {
 	let { token } = sessionStorage;
 	// token不存在，跳转登录，提示用户原因
 	if (!token) {
-		Message.error('请重新登录系统，token失效！');
+		Notification.error({
+			title: `错误`,
+			message: '权限不够，禁止访问，请登录！',
+			duration: 0,
+		});
 		next({ path: '/login', query: { redirect: to.fullPath } });
 		return;
 	}

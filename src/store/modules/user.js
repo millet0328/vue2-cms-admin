@@ -16,14 +16,15 @@ export default {
 		async loadProfile(context, id) {
 			let { status, data } = await Admin.info({ id });
 			// 提交mutation
-			context.commit('setProfile', data);
+			if (status) {
+				context.commit('setProfile', data);
+			}
 		},
 		async updateProfile(context, payload) {
 			let { status, msg } = await Admin.edit(payload);
 			if (status) {
 				// 提交mutation,更新state
 				context.commit('setProfile', payload);
-				return msg;
 			}
 			return { status, msg };
 		},

@@ -31,7 +31,8 @@
 					<el-checkbox v-model="isAgree" label="同意本站用户协议"></el-checkbox>
 				</el-form-item>
 				<el-form-item>
-					<el-button size="medium" :disabled="!isAgree" @click="submitForm('form')" type="primary">注 册</el-button>
+					<el-button size="medium" :disabled="!isAgree" @click="submitForm('form')" type="primary">注 册
+					</el-button>
 				</el-form-item>
 			</el-form>
 			<div class="link-box">
@@ -88,7 +89,8 @@
 					],
 					tel: [
 						{ type: "string", required: true, message: '请输入手机号码', trigger: 'blur' },
-						{ type: "string", pattern: /^[1][3|4|5|6|7|8|9][0-9]{9}$/, message: '请输入正确的手机号码', trigger: 'blur' }
+						{ type: "string", pattern: /^[1][3|4|5|6|7|8|9][0-9]{9}$/, message: '请输入正确的手机号码',
+							trigger: 'blur' }
 					]
 				}
 			}

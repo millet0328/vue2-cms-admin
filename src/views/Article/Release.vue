@@ -13,21 +13,23 @@
 					<el-col :span="6">
 						<el-form-item label="分类" prop="cate_1st">
 							<el-select v-model="form.cate_1st" placeholder="请选择一级分类">
-								<el-option v-for="item in options_1st" :key="item.id" :label="item.name" :value="item.id"></el-option>
+								<el-option v-for="item in options_1st" :key="item.id" :label="item.name"
+									:value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 					</el-col>
 					<el-col :span="6">
 						<el-form-item prop="cate_2nd">
 							<el-select v-model="form.cate_2nd" placeholder="请选择二级分类">
-								<el-option v-for="item in options_2nd" :key="item.id" :label="item.name" :value="item.id"></el-option>
+								<el-option v-for="item in options_2nd" :key="item.id" :label="item.name"
+									:value="item.id"></el-option>
 							</el-select>
 						</el-form-item>
 					</el-col>
 				</el-row>
 				<el-form-item label="主图" prop="main_photo">
-					<single-upload :src.sync="form.main_photo" upload-action="/upload/common/" remove-action="/upload/delete" :headers="headers"
-					 :data="{ type: 'common' }"></single-upload>
+					<single-upload :src.sync="form.main_photo" upload-action="/upload/common/"
+						remove-action="/upload/remove/" :headers="headers" :data="{ type: 'common' }"></single-upload>
 				</el-form-item>
 				<el-form-item label="内容" prop="content">
 					<div id="editor"></div>
@@ -82,17 +84,43 @@
 		},
 		// 侦听器，AJAX，异步操作
 		watch: {
-			'form.cate_1st': function(newVal, oldVal) {
-				// 请求二级分类
-				this.handleLoadSubcate(newVal);
+			'form.cate_1st': async function(newVal, oldVal) {
+				// 获取二级分类
+				this.options_2nd = await this.loadOptions(newVal);
+				// 默认选中第一项
+				if (this.options_2nd.length) {
+					this.form.cate_2nd = this.options_2nd[0].id;
+				} else {
+					this.form.cate_2nd = '';
+				}
 			},
 		},
 		async created() {
+			document.title = "发布文章";
 			// 请求一级分类
-			let options = await this.loadOptions(0);
-			this.options_1st = options;
+			this.options_1st = await this.loadOptions(0);
 			// 默认选中第一项
-			this.form.cate_1st = options[0].id;
+			this.form.cate_1st = this.options_1st[0].id;
+		},
+		mounted() {
+			const editor = new wangEditor(`#editor`);
+			// 配置 onchange 回调函数，将数据同步到 vue 中
+			editor.config.onchange = newHtml => {
+				this.form.content = newHtml;
+			};
+			// 图片上传api
+			// 配置 server 接口地址
+			editor.config.uploadImgServer = '/upload/editor/';
+			// 限制类型
+			editor.config.uploadImgAccept = ['jpg', 'jpeg', 'png'];
+			// 设置token
+			editor.config.uploadImgHeaders = { Authorization: `Bearer ${sessionStorage.token}` };
+			// 自定义filename
+			editor.config.uploadFileName = 'file';
+
+			// 创建编辑器
+			editor.create();
+			this.editor = editor;
 		},
 		methods: {
 			// 请求下一级分类
@@ -101,13 +129,6 @@
 				if (status) {
 					return data;
 				}
-			},
-			async handleLoadSubcate(val) {
-				// 请求二级分类
-				let options = await this.loadOptions(val);
-				this.options_2nd = options;
-				// 默认选中第一项
-				this.form.cate_2nd = options[0].id;
 			},
 			// 发布文章
 			submitForm(formName) {
@@ -121,19 +142,7 @@
 				});
 			},
 		},
-		mounted() {
-			const editor = new wangEditor(`#editor`);
-			// 图片上传api
-			editor.config.uploadImgServer = '/upload/editor/';
-			editor.config.uploadFileName = 'file';
-			// 配置 onchange 回调函数，将数据同步到 vue 中
-			editor.config.onchange = newHtml => {
-				this.form.content = newHtml;
-			};
-			// 创建编辑器
-			editor.create();
-			this.editor = editor;
-		},
+
 	};
 </script>
 

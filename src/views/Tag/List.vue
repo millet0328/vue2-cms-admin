@@ -1,41 +1,29 @@
 <template>
-	<div>
-		<el-row>
-			<el-col :span="12">
-				<el-card class="box-card">
-					<div slot="header" class="header">
-						<span>管理员角色</span>
-						<el-button @click="insertDialogVisible = true" icon="el-icon-circle-plus-outline" plain size="mini"
-							type="primary">添加角色
-						</el-button>
-					</div>
-					<el-table :data="tableData">
-						<el-table-column label="#" prop="id">
-						</el-table-column>
-						<el-table-column label="分类" prop="name">
-							<template slot-scope="scope">
-								<el-tag>{{ scope.row.name }}</el-tag>
-							</template>
-						</el-table-column>
-						<el-table-column label="操作" width="180">
-							<template slot-scope="scope">
-								<el-button :disabled="scope.row.id == 1" @click="openEditDialog(scope.row)"
-									icon="el-icon-edit" plain size="mini" type="primary">编辑
-								</el-button>
-								<el-button :disabled="scope.row.id == 1"
-									@click="handleRemoveRole(scope.row.id,scope.$index)" icon="el-icon-delete" plain
-									size="mini" type="danger">删除
-								</el-button>
-							</template>
-						</el-table-column>
-					</el-table>
-				</el-card>
-			</el-col>
-		</el-row>
-		<!-- 添加角色 -->
-		<el-dialog title="添加角色" :visible.sync="insertDialogVisible" @close="handleDialogClose('insertForm')">
+	<el-card class="box-card">
+		<div class="header" slot="header">
+			<span>标签列表</span>
+			<el-button @click="insertDialogVisible = true" plain size="mini" type="primary"
+				icon="el-icon-circle-plus-outline">
+				添加标签
+			</el-button>
+		</div>
+		<el-table :data="tableData">
+			<el-table-column prop="id" label="#">
+			</el-table-column>
+			<el-table-column prop="name" label="标签名称">
+			</el-table-column>
+			<el-table-column label="操作" width="180">
+				<template slot-scope="scope">
+					<el-button @click="openEditDialog(scope.row)" size="mini" icon="el-icon-edit" type="primary" plain>编辑</el-button>
+					<el-button @click="handleRemove(scope.row.id,scope.$index)" size="mini" icon="el-icon-delete"
+						type="danger" plain>删除</el-button>
+				</template>
+			</el-table-column>
+		</el-table>
+		<!-- 添加标签 -->
+		<el-dialog title="添加标签" :visible.sync="insertDialogVisible" @close="handleDialogClose('insertForm')">
 			<el-form ref="insertForm" :rules="rules" :model="insertForm" label-width="80px">
-				<el-form-item label="角色名称" prop="name">
+				<el-form-item label="标签名称" prop="name">
 					<el-input v-model="insertForm.name"></el-input>
 				</el-form-item>
 			</el-form>
@@ -44,10 +32,10 @@
 				<el-button @click="handleInsert" type="primary">确 定</el-button>
 			</div>
 		</el-dialog>
-		<!-- 编辑角色 -->
-		<el-dialog title="编辑角色" :visible.sync="editDialogVisible" @close="handleDialogClose('editForm')">
+		<!-- 编辑标签 -->
+		<el-dialog title="编辑标签" :visible.sync="editDialogVisible" @close="handleDialogClose('editForm')">
 			<el-form ref="editForm" :rules="rules" :model="editForm" label-width="80px">
-				<el-form-item label="角色名称" prop="name">
+				<el-form-item label="标签名称" prop="name">
 					<el-input v-model="editForm.name"></el-input>
 				</el-form-item>
 			</el-form>
@@ -56,12 +44,11 @@
 				<el-button @click="handleEdit" type="primary">保 存</el-button>
 			</div>
 		</el-dialog>
-	</div>
+	</el-card>
 </template>
 
 <script>
-	import { Role } from '@/api/index';
-
+	import { Tag } from '@/api/';
 	export default {
 		data() {
 			return {
@@ -81,16 +68,27 @@
 			}
 		},
 		created() {
-			document.title = "管理员角色";
 			this.loadList();
+			document.title = "标签列表";
 		},
 		methods: {
 			// 加载列表
 			async loadList() {
-				let { status, data } = await Role.list()
+				let { status, data } = await Tag.list()
 				if (status) {
 					this.tableData = data;
 				}
+			},
+			handleInsert() {
+				this.$refs.insertForm.validate(async (valid) => {
+					if (valid) {
+						let { status, msg, data } = await Tag.insert({ ...this.insertForm });
+						if (status) {
+							this.tableData.push({ ...data, ...this.insertForm });
+							this.insertDialogVisible = false;
+						}
+					}
+				});
 			},
 			openEditDialog(role) {
 				this.editForm = { ...role };
@@ -99,7 +97,7 @@
 			handleEdit() {
 				this.$refs.editForm.validate(async (valid) => {
 					if (valid) {
-						let { status, msg } = await Role.edit(this.editForm.id, { ...this.editForm });
+						let { status, msg } = await Tag.edit(this.editForm.id, { ...this.editForm });
 						if (status) {
 							this.$message.success('修改成功！');
 							this.editDialogVisible = false;
@@ -111,13 +109,13 @@
 					}
 				});
 			},
-			async handleRemoveRole(id, index) {
+			async handleRemove(id, index) {
 				this.$confirm('此操作将永久删除该角色, 是否继续?', {
 						type: 'warning'
 					})
 					.then(async () => {
 						// 删除角色
-						let { status, data } = await Role.remove(id);
+						let { status, data } = await Tag.remove(id);
 						if (status) {
 							this.tableData.splice(index, 1);
 							this.$message.success('删除成功！');
@@ -127,17 +125,6 @@
 						this.$message.info('取消成功')
 					});
 			},
-			handleInsert() {
-				this.$refs.insertForm.validate(async (valid) => {
-					if (valid) {
-						let { status, msg, data } = await Role.insert({ ...this.insertForm });
-						if (status) {
-							this.tableData.push({ ...data, ...this.insertForm });
-							this.insertDialogVisible = false;
-						}
-					}
-				});
-			},
 			handleDialogClose(form) {
 				this.$refs[form].resetFields();
 			},
@@ -145,7 +132,7 @@
 	}
 </script>
 
-<style lang="less">
+<style lang="less" scoped>
 	.box-card {
 		.header {
 			display: flex;

@@ -2,7 +2,7 @@ import axios from 'axios';
 
 import { Loading, Notification } from 'element-ui';
 // 路由实例
-import router from '@/router/index';
+import router from '@/router/';
 
 // Loading实例
 let loading;
@@ -11,7 +11,7 @@ let loading;
 axios.defaults.baseURL = 'http://localhost:3001';
 
 // 请求拦截器
-axios.interceptors.request.use(function(config) {
+axios.interceptors.request.use(function (config) {
 	// 开启Loading
 	loading = Loading.service({ background: 'rgba(0, 0, 0, 0.7)' });
 	// 登录/注册API,不添加token
@@ -23,14 +23,13 @@ axios.interceptors.request.use(function(config) {
 	// 拥有token,在headers头添加token
 	config.headers.Authorization = `Bearer ${token}`;
 	return config;
-}, function(error) {
+}, function (error) {
 	// 对请求错误做些什么
 	return Promise.reject(error);
 });
 
 // 响应拦截器
-axios.interceptors.response.use(function(res) {
-	let { status, data, response } = res;
+axios.interceptors.response.use(function ({ status, data, response }) {
 	// 关闭Loading
 	loading.close();
 	// 判断响应码
@@ -39,31 +38,42 @@ axios.interceptors.response.use(function(res) {
 			return data;
 			break;
 		default:
-			Message.error(response.statusText);
+			Notification.error({
+				title: `错误：${status}`,
+				message: '请查看network信息',
+			});
 			break;
 	}
-}, function({ response: { status, data, statusText } }) {
+}, function ({ response: { status, data, statusText } }) {
 	switch (status) {
 		case 401:
 			// 提示用户
 			let expiredTime = new Date(data.inner.expiredAt).toLocaleString();
 			Notification.error({
-				title: "Token失效",
+				title: `错误：${status}`,
 				message: `token已过期，有效期至${expiredTime}，请重新登录！`,
 			});
 			// 获取当前路由，跳转登录
 			let { fullPath } = router.history.current;
 			router.replace({ path: '/login', query: { redirect: fullPath } });
-			console.error(data.status, data.message);
 			break;
 		case 404:
-			console.error(status, statusText);
+			Notification.error({
+				title: `错误：${status}`,
+				message: 'api接口地址错误，请重新检查！',
+			});
 			break;
 		case 500:
-			console.error(status, statusText);
+			Notification.error({
+				title: `错误：${status}`,
+				message: '后台接口错误，请联系后台开发！',
+			});
 			break;
 		default:
-			console.error(status, statusText);
+			Notification.error({
+				title: `错误：${status}`,
+				message: statusText,
+			});
 			break;
 	}
 });

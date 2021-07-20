@@ -9,7 +9,8 @@
 					<el-input v-model.trim="form.username" prefix-icon="el-icon-user" placeholder="请输入账户名!"></el-input>
 				</el-form-item>
 				<el-form-item label="密码" prop="password">
-					<el-input v-model="form.password" type="password" prefix-icon="el-icon-key" placeholder="请输入密码!"></el-input>
+					<el-input v-model="form.password" type="password" prefix-icon="el-icon-key" placeholder="请输入密码!">
+					</el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button size="medium" type="primary" @click="submitForm('form')">登录</el-button>

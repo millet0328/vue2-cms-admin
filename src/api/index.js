@@ -4,6 +4,8 @@ import User from './modules/user';
 import Role from './modules/role';
 import Upload from './modules/upload';
 import Category from './modules/category';
+import Menu from './modules/menu.js';
+import Tag from './modules/tag.js';
 
 export {
 	Admin,
@@ -12,4 +14,6 @@ export {
 	Role,
 	Upload,
 	Category,
+	Menu,
+	Tag,
 }

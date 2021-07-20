@@ -4,7 +4,7 @@
 			<img class="logo am-margin-right-lg" src="../assets/img/common/logo.png" />
 			<el-button @click="handleToggle" class="icon-toggle" type="text" :icon="toggleIcon"></el-button>
 		</div>
-		<el-menu mode="horizontal" router background-color="#000" text-color="#fff" active-text-color="#ffd04b">
+		<el-menu mode="horizontal" router background-color="#31404e" text-color="#fff" active-text-color="#ffd04b">
 			<el-menu-item>站点设置</el-menu-item>
 			<el-menu-item>预览网站</el-menu-item>
 			<el-submenu index="3">

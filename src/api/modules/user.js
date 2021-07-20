@@ -1,13 +1,13 @@
 import axios from 'axios';
 
 // 普通用户列表
-let list = (data) => axios.get('/user/list', { params: data })
+let list = (params) => axios.get('/user/list', { params })
 // 删除用户
-let remove = (id) => axios.delete(`/user/${id}`);
+let remove = (data) => axios.post('/user/remove', data);
 // 获取用户资料
-let profile = (data) => axios.get('/user', { params: data });
+let profile = (params) => axios.get('/user/info', { params });
 // 编辑资料
-let edit = (id, data) => axios.put(`/user/${id}`, data);
+let edit = (data) => axios.post('/user/info', data);
 
 export default {
 	list,
