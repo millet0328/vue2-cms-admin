@@ -1,5 +1,5 @@
 <template>
-	<el-menu router :collapse="isCollapse" class="side-bar" :default-openeds="['1']" background-color="#545c64"
+	<el-menu router :collapse="isCollapse" class="side-bar" :default-openeds="['11']" background-color="#545c64"
 		text-color="#fff" active-text-color="#ffd04b">
 		<template v-for="(item,index) in menu">
 			<el-menu-item v-if="item.path" :index="item.path">

@@ -112,7 +112,6 @@
 		}
 
 		.cover {
-			content: '';
 			display: block;
 			font-size: 14px;
 			position: absolute;
