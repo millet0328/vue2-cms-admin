@@ -15,10 +15,14 @@ let edit = (data) => axios.post('/article/edit', data);
 // 获取文章详情
 let detail = (params) => axios.get('/article/detail', { params });
 
+// 文章标记标签
+let tag = (data) => axios.post('/article/tag', data);
+
 export default {
-	list,
-	release,
-	remove,
-	edit,
-	detail,
+    list,
+    release,
+    remove,
+    edit,
+    detail,
+    tag,
 }

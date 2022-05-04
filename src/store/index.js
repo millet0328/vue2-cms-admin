@@ -1,25 +1,16 @@
-import Vue from 'vue'
-import Vuex from 'vuex'
-
-Vue.use(Vuex)
-
-// 导入模块
-import menu from './modules/menu';
-import user from './modules/user';
-
+import Vue from 'vue';
+import Vuex from 'vuex';
 import createPersistedState from "vuex-persistedstate";
+// 模块
+import AccountModule from './modules/Account/';
+import MenuModule from './modules/Menu/';
 
-let store = new Vuex.Store({
-	state: {},
-	mutations: {},
-	actions: {},
-	getters: {},
+Vue.use(Vuex);
+
+export default new Vuex.Store({
 	modules: {
-		menu,
-		user,
+		Account: AccountModule,
+		Menu: MenuModule
 	},
-	// 插件
-	plugins: [createPersistedState()]
+	plugins: [createPersistedState()],
 })
-
-export default store

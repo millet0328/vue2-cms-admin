@@ -25,7 +25,7 @@
 </template>
 
 <script>
-	import { Admin } from '@/api/index';
+	import { Admin } from '@/api/';
 
 	export default {
 		data() {
@@ -85,13 +85,13 @@
 	.bg {
 		width: 100vw;
 		height: 100vh;
-		background: url(../assets/img/login/bg.jpg);
+		background: url(../../assets/img/login/bg.jpg);
 		background-size: cover;
 		position: relative;
 
 		.form-box {
 			position: absolute;
-			right: 100px;
+			right: 40px;
 			top: 50%;
 			transform: translateY(-50%);
 			background-color: white;

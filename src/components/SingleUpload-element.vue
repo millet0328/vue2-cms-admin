@@ -1,32 +1,26 @@
 <template>
-  <el-upload
-      :action="uploadAction"
-      :before-upload="handleBeforeUpload"
-      :data="data"
-      :headers="headers"
-      :on-error="handleUploadError"
-      :on-success="handleUploadSuccess"
-      :show-file-list="false"
-      class="avatar-uploader"
-  >
-    <template v-if="src">
+  <el-upload :action="uploadAction" :before-upload="handleBeforeUpload" :data="data" :headers="headers"
+             :on-error="handleUploadError" :on-success="handleUploadSuccess" :show-file-list="false"
+             class="avatar-uploader">
+    <template v-if="value">
       <div class="cover" @click.stop="handleRemove"><i class="el-icon-delete avatar-uploader-icon"></i></div>
-      <img :src="src" class="avatar"/>
+      <img :src="value" class="avatar"/>
     </template>
     <i v-else class="el-icon-plus avatar-uploader-icon"></i>
   </el-upload>
 </template>
 
 <script>
-// 支持双向数据绑定，采用:src.sync
+// 支持双向数据绑定，采用v-model
 // 支持$emit事件success,处理复杂上传成功回调函数
 import axios from 'axios';
 
 export default {
   name: 'single-upload',
   props: {
-    src: {
-      type: String
+    value: {
+      type: String,
+      default: '',
     },
     defaultImage: {
       type: String
@@ -40,10 +34,20 @@ export default {
       required: true
     },
     data: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {
+          type: 'common'
+        }
+      }
     },
     headers: {
-      type: Object
+      type: Object,
+      default: () => {
+        return {
+          Authorization: `Bearer ${ sessionStorage.token }`
+        }
+      }
     }
   },
   methods: {
@@ -65,34 +69,36 @@ export default {
       // 触发外部绑定的事件
       this.$emit('success', res);
       // 双向数据绑定触发
-      this.$emit('update:src', res.src);
+      this.$emit('input', res.src);
     },
     // 上传图片失败
-    handleUploadError({status, message}, file, fileList) {
+    handleUploadError({ status, message }, file, fileList) {
       switch (status) {
         case 401:
           this.$message.error(`错误:401,Token失效,请重新登录!`);
           break;
         case 400:
           message = JSON.parse(message);
-          this.$message.error(`错误:400,${message}`);
+          this.$message.error(`错误:400,${ message }`);
           break;
         default:
-          this.$message.error(`错误:${status},${message}!`);
+          this.$message.error(`错误:${ status },${ message }!`);
           break;
       }
     },
     // 删除现有图片
     async handleRemove() {
+      // 判断是否默认头像
+      let isDefault = this.value.includes(this.defaultImage);
       // 如果不是默认头像，物理删除图片
-      if (this.src != this.defaultImage) {
-        let {status} = await axios.post(this.removeAction, {src: this.src});
+      if (!isDefault) {
+        let { status } = await axios.post(this.removeAction, { src: this.value });
         if (status) {
           this.$message.success('删除成功!');
         }
       }
       // 如果是默认头像，仅移除，不做物理删除
-      this.$emit('update:src', '');
+      this.$emit('input', '');
     }
   }
 };
@@ -111,7 +117,7 @@ export default {
   }
 
   .avatar-uploader-icon {
-    font-size: 28px;
+    font-size: 20px;
     color: #8c939d;
     width: 150px;
     height: 150px;
@@ -120,7 +126,6 @@ export default {
   }
 
   .cover {
-    content: '';
     display: block;
     font-size: 14px;
     position: absolute;
