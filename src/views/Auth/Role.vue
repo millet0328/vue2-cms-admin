@@ -30,24 +30,21 @@
 
 <script>
 export default {
-  data() {
-    return {
-      tableData: [
-        { "id": 1, "name": "超级管理员" }],
-    }
-  },
-  methods: {
-
-  }
+	data() {
+		return {
+			tableData: [
+				{ "id": 1, "name": "超级管理员" }],
+		}
+	},
 }
 </script>
 
 <style lang="less" scoped>
 .box-card {
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
 }
 </style>

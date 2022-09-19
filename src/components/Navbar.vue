@@ -10,7 +10,7 @@
 			<el-menu-item index="2">预览网站</el-menu-item>
 			<el-submenu index="3">
 				<template slot="title">
-					<el-avatar size="small" src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+					<el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
 					<span class="username am-margin-left-sm">赵薇</span>
 				</template>
 				<el-menu-item index="/admin/info">账户设置</el-menu-item>

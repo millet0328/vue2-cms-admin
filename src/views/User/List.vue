@@ -25,21 +25,21 @@
 </template>
 
 <script>
-
 export default {
-  data() {
-    return {
-      tableData: [{
-        "id": 1,
-        "username": "admin",
-        "nickname": "papi酱",
-        "sex": "女",
-        "tel": '15863008280',
-      }],
-    }
-  },
+	data() {
+		return {
+			tableData: [{
+				"id": 1,
+				"username": "admin",
+				"nickname": "papi酱",
+				"sex": "女",
+				"tel": '15863008280',
+			}],
+		}
+	},
 }
 </script>
 
 <style>
+
 </style>

@@ -4,7 +4,7 @@
 			<div slot="header">
 				<span>注册</span>
 			</div>
-			<el-form ref="form" :rules="rules" :model="form" label-width="60px">
+			<el-form ref="form" :model="form" label-width="60px">
 				<el-form-item label="账户">
 					<el-input v-model="form.username" prefix-icon="el-icon-user"></el-input>
 				</el-form-item>
@@ -27,7 +27,7 @@
 					<el-checkbox v-model="form.isAgree" label="同意本站用户协议"></el-checkbox>
 				</el-form-item>
 				<el-form-item>
-					<el-button size="medium" @click="registerHandle" type="primary">注 册</el-button>
+					<el-button size="medium" type="primary">注 册</el-button>
 				</el-form-item>
 			</el-form>
 			<div class="link-box">
@@ -39,50 +39,45 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				form: {
-					username: '',
-					fullname: '',
-					sex: '男',
-					tel: '',
-					email: '',
-					isAgree: [],
-				},
-				rules: {
-					isAgree: [
-						{ type: 'array', required: true, message: '请同意用户协议', trigger: 'change' },
-					]
-				}
-			}
-		},
-	}
+export default {
+	data() {
+		return {
+			form: {
+				username: '',
+				fullname: '',
+				sex: '男',
+				tel: '',
+				email: '',
+				isAgree: false,
+			},
+		}
+	},
+}
 </script>
 
 <style lang="less" scoped>
-	.bg {
-		width: 100vw;
-		height: 100vh;
-		background: url(../../assets/img/register/bg.jpg);
-		background-size: cover;
-		position: relative;
+.bg {
+	width: 100vw;
+	height: 100vh;
+	background: url(../../assets/img/register/bg.jpg);
+	background-size: cover;
+	position: relative;
 
-		.form-box {
-			position: absolute;
-			right: 100px;
-			top: 50%;
-			transform: translateY(-50%);
-			background-color: white;
-			border-radius: 4px;
-			font-size: 14px;
-			width: 360px;
+	.form-box {
+		position: absolute;
+		right: 40px;
+		top: 50%;
+		transform: translateY(-50%);
+		background-color: white;
+		border-radius: 4px;
+		font-size: 14px;
+		width: 360px;
 
-			.link-box {
-				display: flex;
-				justify-content: space-between;
-				align-items: center;
-			}
+		.link-box {
+			display: flex;
+			justify-content: space-between;
+			align-items: center;
 		}
 	}
+}
 </style>

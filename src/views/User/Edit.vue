@@ -27,26 +27,23 @@
 </template>
 
 <script>
-	export default {
-		props: ['id'],
-		data() {
-			return {
-				form: {
-					username: '',
-					fullname: '',
-					sex: '男',
-					tel: '',
-					email: '',
-					avatar: '',
-				},
-			}
-		},
-		methods: {
-			
+export default {
+	props: ['id'],
+	data() {
+		return {
+			form: {
+				username: '',
+				fullname: '',
+				sex: '男',
+				tel: '',
+				email: '',
+				avatar: '',
+			},
 		}
-	}
+	},
+}
 </script>
 
 <style>
-	
+
 </style>

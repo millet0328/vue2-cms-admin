@@ -22,27 +22,24 @@
 </template>
 
 <script>
-	export default {
-		data() {
-			return {
-				tableData: [{
-					"id": 1,
-					"name": "二次元",
-				}],
-			}
-		},
-		methods: {
-
+export default {
+	data() {
+		return {
+			tableData: [{
+				"id": 1,
+				"name": "二次元",
+			}],
 		}
-	}
+	},
+}
 </script>
 
 <style lang="less" scoped>
-	.box-card {
-		.header {
-			display: flex;
-			justify-content: space-between;
-			align-items: center;
-		}
+.box-card {
+	.header {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
+}
 </style>
